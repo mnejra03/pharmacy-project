@@ -23,12 +23,14 @@ public static class DependencyInjection
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        // DbContext: InMemory for test environments; SQL Server otherwise
+        // Use an isolated in-memory store for local development and tests so the app
+        // can run without a separately installed/configured SQL Server.
         services.AddDbContext<DatabaseContext>((sp, options) =>
         {
-            if (env.IsTest())
+            if (env.IsTest() || env.IsDevelopment())
             {
-                options.UseInMemoryDatabase("IntegrationTestsDb");
+                var databaseName = env.IsTest() ? "IntegrationTestsDb" : "PharmacyDevelopmentDb";
+                options.UseInMemoryDatabase(databaseName);
 
                 return;
             }

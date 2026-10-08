@@ -29,5 +29,5 @@ The requested scope excludes catalog, cart, checkout, payment, and order flows. 
 
 - The source project has no mail/SMS token delivery implementation to migrate; outbound activation/reset invitations remain unimplemented.
 - Drag-and-drop behavior is not present in the source feature screens.
-- Local file storage requires persistent writable backend storage in production; Azure Blob credentials/provider were not migrated.
+- Local development uses EF InMemory and resets data on backend restart; non-development environments use SQL Server migrations. Local file storage requires persistent writable backend storage in production; Azure Blob credentials/provider were not migrated.
 - Recipe scan bytes are stored in the database, with a 10 MB upload limit.

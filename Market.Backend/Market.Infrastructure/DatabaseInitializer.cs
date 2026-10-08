@@ -16,14 +16,14 @@ public static class DatabaseInitializer
         await using var scope = services.CreateAsyncScope();
         var ctx = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
-        if (env.IsTest())
+        if (env.IsTest() || env.IsDevelopment())
         {
             await ctx.Database.EnsureCreatedAsync();
             await DynamicDataSeeder.SeedAsync(ctx);
             return;
         }
 
-        // SQL Server or similar
+        // Non-development environments use SQL Server migrations.
         await ctx.Database.MigrateAsync();//update-database
 
         if (env.IsDevelopment())
