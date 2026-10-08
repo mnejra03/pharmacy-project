@@ -5,6 +5,7 @@ import { AdminSettingsComponent } from './admin-settings/admin-settings.componen
 import { UsersComponent } from './users/users.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdvertisementsComponent } from './advertisements/advertisements.component';
+import { AdminProductsComponent } from './products/products.component';
 
 const routes: Routes = [{
   path: '', component: AdminLayoutComponent, children: [
@@ -12,6 +13,7 @@ const routes: Routes = [{
     { path: 'overview', component: DashboardComponent },
     { path: 'advertisements', component: AdvertisementsComponent },
     { path: 'users', component: UsersComponent },
+    { path: 'products', component: AdminProductsComponent },
     { path: '', redirectTo: 'overview', pathMatch: 'full' }
   ]
 }];

@@ -4,4 +4,6 @@ global using Market.Domain.Entities.Identity;
 global using Microsoft.AspNetCore.Identity;
 global using Market.Domain.Entities.Communication;
 global using Market.Domain.Entities.Content;
+global using Market.Domain.Entities.Catalog;
+global using Market.Domain.Entities.Commerce;
 global using Market.Application.Abstractions;

@@ -6,9 +6,10 @@ import { SharedModule } from '../shared/shared-module';
 import { UsersComponent } from './users/users.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdvertisementsComponent } from './advertisements/advertisements.component';
+import { AdminProductsComponent } from './products/products.component';
 
 @NgModule({
-  declarations: [AdminLayoutComponent, AdminSettingsComponent, UsersComponent, DashboardComponent, AdvertisementsComponent],
+  declarations: [AdminLayoutComponent, AdminSettingsComponent, UsersComponent, DashboardComponent, AdvertisementsComponent, AdminProductsComponent],
   imports: [AdminRoutingModule, SharedModule]
 })
 export class AdminModule {}

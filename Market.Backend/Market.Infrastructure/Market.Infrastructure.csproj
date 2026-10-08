@@ -24,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Database\Seeders\legacy-products.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Market.Application\Market.Application.csproj" />
     <ProjectReference Include="..\Market.Domain\Market.Domain.csproj" />
     <ProjectReference Include="..\Market.Shared\Market.Shared.csproj" />
