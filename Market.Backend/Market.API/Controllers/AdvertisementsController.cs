@@ -3,7 +3,7 @@ namespace Market.API.Controllers;
 [ApiController, Route("api/advertisements")]
 public sealed class AdvertisementsController(IMediator mediator) : ControllerBase
 {
-    [HttpPost("image"), Authorize] public async Task<ActionResult<UploadedImageDto>> UploadImage([FromForm] IFormFile file, CancellationToken ct)
+    [HttpPost("image"), Authorize] public async Task<ActionResult<UploadedImageDto>> UploadImage(IFormFile file, CancellationToken ct)
     {
         if (file is null || file.Length == 0 || file.Length > 5 * 1024 * 1024) return BadRequest("Slika mora imati između 1 bajt i 5 MB.");
         await using var stream = new MemoryStream(); await file.CopyToAsync(stream, ct);

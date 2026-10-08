@@ -6,7 +6,7 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
     [HttpGet("me")] public async Task<ActionResult<UserProfileDto>> Me(CancellationToken ct) => Ok(await mediator.Send(new GetMyProfileQuery(), ct));
     [HttpPut("me")] public async Task<ActionResult<UserProfileDto>> UpdateMe([FromBody] UpdateMyProfileCommand command, CancellationToken ct) => Ok(await mediator.Send(command, ct));
     [HttpPost("me/password")] public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command, CancellationToken ct) { await mediator.Send(command, ct); return NoContent(); }
-    [HttpPost("me/profile-image")] public async Task<ActionResult<UserProfileDto>> UpdateProfileImage([FromForm] IFormFile file, CancellationToken ct)
+    [HttpPost("me/profile-image")] public async Task<ActionResult<UserProfileDto>> UpdateProfileImage(IFormFile file, CancellationToken ct)
     {
         if (file is null || file.Length == 0 || file.Length > 5 * 1024 * 1024) return BadRequest("Slika mora imati između 1 bajt i 5 MB.");
         await using var stream = new MemoryStream(); await file.CopyToAsync(stream, ct);
