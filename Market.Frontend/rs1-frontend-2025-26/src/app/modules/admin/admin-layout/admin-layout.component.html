@@ -16,15 +16,10 @@
               <mat-icon>admin_panel_settings</mat-icon>
               {{ 'ADMIN_PANEL.ROLES.ADMIN' | translate }}
             </mat-chip>
-            } @else if (auth.isManager()) {
+            } @else if (auth.isPharmacist()) {
             <mat-chip class="role-chip manager">
               <mat-icon>manage_accounts</mat-icon>
-              {{ 'ADMIN_PANEL.ROLES.MANAGER' | translate }}
-            </mat-chip>
-            } @else if (auth.isEmployee()) {
-            <mat-chip class="role-chip employee">
-              <mat-icon>badge</mat-icon>
-              {{ 'ADMIN_PANEL.ROLES.EMPLOYEE' | translate }}
+              Farmaceut
             </mat-chip>
             }
           </div>
@@ -55,35 +50,6 @@
 
     <!-- NAVIGATION MENU -->
     <mat-nav-list>
-      <!-- CATALOG SECTION -->
-      <div class="nav-section-title">
-        {{ 'ADMIN_PANEL.MENU.CATALOG' | translate }}
-      </div>
-
-      <a mat-list-item routerLink="/admin/product-categories" routerLinkActive="active">
-        <mat-icon matListItemIcon>category</mat-icon>
-        <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.CATEGORIES' | translate }}</span>
-      </a>
-
-      <a mat-list-item routerLink="/admin/products" routerLinkActive="active">
-        <mat-icon matListItemIcon>inventory_2</mat-icon>
-        <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.PRODUCTS' | translate }}</span>
-      </a>
-
-      <mat-divider></mat-divider>
-
-      <!-- ORDERS SECTION -->
-      <div class="nav-section-title">
-        {{ 'ADMIN_PANEL.MENU.ORDERS_SECTION' | translate }}
-      </div>
-
-      <a mat-list-item routerLink="/admin/orders" routerLinkActive="active">
-        <mat-icon matListItemIcon>shopping_cart</mat-icon>
-        <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.ORDERS' | translate }}</span>
-      </a>
-
-      <mat-divider></mat-divider>
-
       <!-- SYSTEM SECTION -->
       <div class="nav-section-title">
         {{ 'ADMIN_PANEL.MENU.SYSTEM' | translate }}
@@ -92,6 +58,18 @@
       <a mat-list-item routerLink="/admin/settings" routerLinkActive="active">
         <mat-icon matListItemIcon>settings</mat-icon>
         <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.SETTINGS' | translate }}</span>
+      </a>
+      <a mat-list-item routerLink="/admin/overview" routerLinkActive="active">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Pregled</span>
+      </a>
+      <a mat-list-item routerLink="/admin/advertisements" routerLinkActive="active">
+        <mat-icon matListItemIcon>photo_library</mat-icon>
+        <span matListItemTitle>Oglasi i slike</span>
+      </a>
+      <a mat-list-item routerLink="/admin/users" routerLinkActive="active">
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Upravljanje korisnicima</span>
       </a>
 
       <!-- LOGOUT -->

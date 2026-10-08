@@ -28,10 +28,10 @@ public interface IAppCurrentUser
     /// <summary>
     /// Indicates whether the user is a manager.
     /// </summary>
-    bool IsManager { get; }
+    bool IsPharmacist { get; }
 
     /// <summary>
     /// Indicates whether the user is a regular employee.
     /// </summary>
-    bool IsEmployee { get; }
+    bool IsCustomer { get; }
 }

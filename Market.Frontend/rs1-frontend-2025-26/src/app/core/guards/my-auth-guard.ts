@@ -7,10 +7,10 @@ export const myAuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const currentUser = inject(CurrentUserService);
   const router = inject(Router);
 
-  const requireAuth = route.data['requireAuth'] === true;
-  const requireAdmin = route.data['requireAdmin'] === true;
-  const requireManager = route.data['requireManager'] === true;
-  const requireEmployee = route.data['requireEmployee'] === true;
+  const rules = route.data['auth'] ?? route.data;
+  const requireAuth = rules['requireAuth'] === true;
+  const requireAdmin = rules['requireAdmin'] === true;
+  const requirePharmacist = rules['requirePharmacist'] === true;
 
   const isAuth = currentUser.isAuthenticated();
 
@@ -37,15 +37,11 @@ export const myAuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     return false;
   }
 
-  if (requireManager && !user.isManager) {
+  if (requirePharmacist && !user.isPharmacist) {
     router.navigate([currentUser.getDefaultRoute()]);
     return false;
   }
 
-  if (requireEmployee && !user.isEmployee) {
-    router.navigate([currentUser.getDefaultRoute()]);
-    return false;
-  }
 
   return true;
 };
@@ -53,8 +49,7 @@ export const myAuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
 export interface MyAuthRouteData {
   requireAuth?: boolean;
   requireAdmin?: boolean;
-  requireManager?: boolean;
-  requireEmployee?: boolean;
+  requirePharmacist?: boolean;
 }
 
 export function myAuthData(data: MyAuthRouteData): { auth: MyAuthRouteData } {

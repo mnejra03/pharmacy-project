@@ -11,6 +11,7 @@ import {
   LogoutCommand,
   RefreshTokenCommand,
   RefreshTokenCommandDto,
+  RegisterCommand,
 } from '../../../api-services/auth/auth-api.model';
 
 import { AuthStorageService } from './auth-storage.service';
@@ -44,8 +45,8 @@ export class AuthFacadeService {
   /** computed signali nad current userom */
   isAuthenticated = computed(() => !!this._currentUser());
   isAdmin = computed(() => this._currentUser()?.isAdmin ?? false);
-  isManager = computed(() => this._currentUser()?.isManager ?? false);
-  isEmployee = computed(() => this._currentUser()?.isEmployee ?? false);
+  isPharmacist = computed(() => this._currentUser()?.isPharmacist ?? false);
+  isCustomer = computed(() => this._currentUser()?.isCustomer ?? false);
 
   constructor() {
     // pokušaj inicijalizacije iz postojećeg access tokena
@@ -68,6 +69,9 @@ export class AuthFacadeService {
       }),
       map(() => void 0)
     );
+  }
+  register(payload: RegisterCommand): Observable<void> {
+    return this.api.register(payload).pipe(tap(response => { this.storage.saveLogin(response); this.decodeAndSetUser(response.accessToken); }), map(() => void 0));
   }
 
   /**
@@ -156,8 +160,8 @@ export class AuthFacadeService {
         userId: Number(payload.sub),
         email: payload.email,
         isAdmin: payload.is_admin === 'true',
-        isManager: payload.is_manager === 'true',
-        isEmployee: payload.is_employee === 'true',
+        isPharmacist: payload.is_pharmacist === 'true',
+        isCustomer: payload.is_customer === 'true',
         tokenVersion: Number(payload.ver),
       };
 

@@ -49,6 +49,18 @@ public partial class Program
                 .AddInfrastructure(builder.Configuration, builder.Environment)
                 .AddApplication();
 
+            builder.Services.PostConfigure<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions>(
+                Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    var previous = options.Events.OnMessageReceived;
+                    options.Events.OnMessageReceived = async context =>
+                    {
+                        if (previous is not null) await previous(context);
+                        if (string.IsNullOrEmpty(context.Token) && context.Request.Path.StartsWithSegments("/hubs/chat"))
+                            context.Token = context.Request.Query["access_token"];
+                    };
+                });
+
             // CORS policy to allow Angular dev server access
             builder.Services.AddCors(options =>
             {
@@ -79,6 +91,7 @@ public partial class Program
             app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             // UseCors ide prije UseAuthorization i UseAuthentification
             app.UseCors("AllowAngularDev");
 
@@ -86,6 +99,7 @@ public partial class Program
             app.UseAuthorization();
 
             app.MapControllers();
+            app.MapHub<Market.Infrastructure.Common.ChatHub>("/hubs/chat");
 
             // Database migrations + seeding
             await app.Services.InitializeDatabaseAsync(app.Environment);

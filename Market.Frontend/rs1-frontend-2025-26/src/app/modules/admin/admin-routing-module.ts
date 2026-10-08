@@ -1,62 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
-import { ProductsComponent } from './catalogs/products/products.component';
-import { ProductsAddComponent } from './catalogs/products/products-add/products-add.component';
-import { ProductsEditComponent } from './catalogs/products/products-edit/products-edit.component';
-import { ProductCategoriesComponent } from './catalogs/product-categories/product-categories.component';
-import {AdminOrdersComponent} from './orders/admin-orders.component';
-import {AdminSettingsComponent} from './admin-settings/admin-settings.component';
+import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
+import { UsersComponent } from './users/users.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AdvertisementsComponent } from './advertisements/advertisements.component';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: AdminLayoutComponent,
-    children: [
-      // PRODUCTS
-      {
-        path: 'products',
-        component: ProductsComponent,
-      },
-      {
-        path: 'products/add',
-        component: ProductsAddComponent,
-      },
-      {
-        path: 'products/:id/edit',
-        component: ProductsEditComponent,
-      },
+const routes: Routes = [{
+  path: '', component: AdminLayoutComponent, children: [
+    { path: 'settings', component: AdminSettingsComponent },
+    { path: 'overview', component: DashboardComponent },
+    { path: 'advertisements', component: AdvertisementsComponent },
+    { path: 'users', component: UsersComponent },
+    { path: '', redirectTo: 'overview', pathMatch: 'full' }
+  ]
+}];
 
-      // PRODUCT CATEGORIES
-      {
-        path: 'product-categories',
-        component: ProductCategoriesComponent,
-      },
-
-      {
-        path: 'orders',
-        component: AdminOrdersComponent,
-      },
-
-      {
-        path: 'settings',
-        component: AdminSettingsComponent,
-      },
-
-
-      // default admin route → /admin/products
-      {
-        path: '',
-        redirectTo: 'products',
-        pathMatch: 'full',
-      },
-    ],
-  },
-];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
+@NgModule({ imports: [RouterModule.forChild(routes)], exports: [RouterModule] })
 export class AdminRoutingModule {}

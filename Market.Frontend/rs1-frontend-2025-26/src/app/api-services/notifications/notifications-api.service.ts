@@ -1,0 +1,3 @@
+import { HttpClient } from '@angular/common/http'; import { inject, Injectable } from '@angular/core'; import { environment } from '../../../environments/environment';
+export interface NotificationItem { id: number; title: string; message: string; createdAt: string; isRead: boolean; type: string; senderId?: number; }
+@Injectable({ providedIn: 'root' }) export class NotificationsApiService { private http=inject(HttpClient); private url=`${environment.apiUrl}/api/notifications`; getAll(){return this.http.get<NotificationItem[]>(this.url);} markRead(id:number){return this.http.put<void>(`${this.url}/${id}/read`,{});} delete(id:number){return this.http.delete<void>(`${this.url}/${id}`);} }

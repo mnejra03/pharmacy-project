@@ -1,14 +1,4 @@
-import {NgModule} from '@angular/core';
-
-import {ClientRoutingModule} from './client-routing-module';
-import {SharedModule} from '../shared/shared-module';
-
-
-@NgModule({
-  declarations: [],
-  imports: [
-    SharedModule,
-    ClientRoutingModule
-  ]
-})
-export class ClientModule { }
+import { NgModule } from '@angular/core'; import { SharedModule } from '../shared/shared-module'; import { ClientRoutingModule } from './client-routing-module';
+import { NotificationsComponent } from './notifications/notifications.component'; import { RecipesComponent } from './recipes/recipes.component'; import { PharmacistRecipesComponent } from './recipes/pharmacist-recipes.component'; import { ChatComponent } from './chat/chat.component'; import { ProfileComponent } from './profile/profile.component';
+import { ClientLayoutComponent } from './client-layout/client-layout.component';
+@NgModule({ declarations:[ClientLayoutComponent,NotificationsComponent,RecipesComponent,PharmacistRecipesComponent,ChatComponent,ProfileComponent], imports:[SharedModule,ClientRoutingModule] }) export class ClientModule {}

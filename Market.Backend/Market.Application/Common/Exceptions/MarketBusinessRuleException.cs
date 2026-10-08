@@ -7,7 +7,7 @@
 /// but situations where a request cannot be executed because it would
 /// violate business logic.
 ///
-/// Example: attempting to disable a category that still contains active products.
+/// Example: attempting an operation that conflicts with an active related record.
 /// </summary>
 public sealed class MarketBusinessRuleException : Exception
 {

@@ -9,6 +9,7 @@ export interface LoginCommand {
   password: string;
   fingerprint?: string | null;
 }
+export interface RegisterCommand { email: string; password: string; firstName: string; lastName: string; phoneNumber?: string | null; }
 
 /**
  * Response for POST /Auth/login

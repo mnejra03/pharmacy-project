@@ -3,7 +3,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
 import { DialogConfig, DialogType, DialogButton, DialogResult } from '../models/dialog-config.model';
 import {FitConfirmDialogComponent} from '../components/fit-confirm-dialog/fit-confirm-dialog.component';
 
@@ -11,10 +10,7 @@ import {FitConfirmDialogComponent} from '../components/fit-confirm-dialog/fit-co
   providedIn: 'root'
 })
 export class DialogHelperService {
-  constructor(
-    private dialog: MatDialog,
-    private translate: TranslateService
-  ) {}
+  constructor(private dialog: MatDialog) {}
 
   /**
    * Opens a custom dialog with full configuration
@@ -174,120 +170,4 @@ export class DialogHelperService {
     return this.open(config);
   }
 
-  // Convenience methods for common scenarios
-
-  /**
-   * Product Category specific dialogs
-   */
-  productCategory = {
-    confirmDelete: (categoryName: string) => {
-      return this.confirmDelete(
-        categoryName,
-        'PRODUCT_CATEGORIES.DIALOGS.DELETE_MESSAGE'
-      );
-    },
-
-    showCreateSuccess: () => {
-      return this.showSuccess(
-        'DIALOGS.TITLES.SUCCESS',
-        'PRODUCT_CATEGORIES.DIALOGS.SUCCESS_CREATE'
-      );
-    },
-
-    showUpdateSuccess: () => {
-      return this.showSuccess(
-        'DIALOGS.TITLES.SUCCESS',
-        'PRODUCT_CATEGORIES.DIALOGS.SUCCESS_UPDATE'
-      );
-    },
-
-    showDeleteSuccess: () => {
-      return this.showSuccess(
-        'DIALOGS.TITLES.SUCCESS',
-        'PRODUCT_CATEGORIES.DIALOGS.SUCCESS_DELETE'
-      );
-    },
-
-    showCreateError: () => {
-      return this.showError(
-        'DIALOGS.TITLES.ERROR',
-        'PRODUCT_CATEGORIES.DIALOGS.ERROR_CREATE'
-      );
-    },
-
-    showUpdateError: () => {
-      return this.showError(
-        'DIALOGS.TITLES.ERROR',
-        'PRODUCT_CATEGORIES.DIALOGS.ERROR_UPDATE'
-      );
-    },
-
-    showDeleteError: () => {
-      return this.showError(
-        'DIALOGS.TITLES.ERROR',
-        'PRODUCT_CATEGORIES.DIALOGS.ERROR_DELETE'
-      );
-    }
-  };
-
-  /**
-   * Product specific dialogs
-   */
-  product = {
-    confirmDelete: (productName: string) => {
-      return this.confirmDelete(
-        productName,
-        'PRODUCTS.DIALOGS.DELETE_MESSAGE'
-      );
-    },
-
-    confirmCancel: () => {
-      return this.confirm(
-        'PRODUCTS.DIALOGS.UNSAVED_CHANGES',
-        'PRODUCTS.DIALOGS.CONFIRM_CANCEL'
-      );
-    },
-
-    showCreateSuccess: () => {
-      return this.showSuccess(
-        'DIALOGS.TITLES.SUCCESS',
-        'PRODUCTS.DIALOGS.SUCCESS_CREATE'
-      );
-    },
-
-    showUpdateSuccess: () => {
-      return this.showSuccess(
-        'DIALOGS.TITLES.SUCCESS',
-        'PRODUCTS.DIALOGS.SUCCESS_UPDATE'
-      );
-    },
-
-    showDeleteSuccess: () => {
-      return this.showSuccess(
-        'DIALOGS.TITLES.SUCCESS',
-        'PRODUCTS.DIALOGS.SUCCESS_DELETE'
-      );
-    },
-
-    showCreateError: () => {
-      return this.showError(
-        'DIALOGS.TITLES.ERROR',
-        'PRODUCTS.DIALOGS.ERROR_CREATE'
-      );
-    },
-
-    showUpdateError: () => {
-      return this.showError(
-        'DIALOGS.TITLES.ERROR',
-        'PRODUCTS.DIALOGS.ERROR_UPDATE'
-      );
-    },
-
-    showDeleteError: () => {
-      return this.showError(
-        'DIALOGS.TITLES.ERROR',
-        'PRODUCTS.DIALOGS.ERROR_DELETE'
-      );
-    }
-  };
 }

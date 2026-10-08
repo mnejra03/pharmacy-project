@@ -11,8 +11,8 @@ export class CurrentUserService {
 
   isAuthenticated = computed(() => this.auth.isAuthenticated());
   isAdmin = computed(() => this.auth.isAdmin());
-  isManager = computed(() => this.auth.isManager());
-  isEmployee = computed(() => this.auth.isEmployee());
+  isPharmacist = computed(() => this.auth.isPharmacist());
+  isCustomer = computed(() => this.auth.isCustomer());
 
   get snapshot() {
     return this.auth.currentUser();

@@ -22,11 +22,14 @@ public sealed class UserEntityConfiguration : IEntityTypeConfiguration<MarketUse
         b.Property(x => x.IsAdmin)
             .HasDefaultValue(false);
 
-        b.Property(x => x.IsManager)
+        b.Property(x => x.IsPharmacist)
             .HasDefaultValue(false);
 
-        b.Property(x => x.IsEmployee)
-            .HasDefaultValue(true); // Default: regular user
+        b.Property(x => x.IsCustomer).HasDefaultValue(true);
+        b.Property(x => x.FirstName).HasMaxLength(100).IsRequired();
+        b.Property(x => x.LastName).HasMaxLength(100).IsRequired();
+        b.Property(x => x.PhoneNumber).HasMaxLength(30);
+        b.Property(x => x.ProfileImageUrl).HasMaxLength(500);
 
         b.Property(x => x.TokenVersion)
             .HasDefaultValue(0);
