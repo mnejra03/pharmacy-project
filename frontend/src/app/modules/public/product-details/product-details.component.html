@@ -4,7 +4,10 @@
 
   <div class="product-details">
 
-    <img *ngIf="product.picture" [src]="product.picture" alt="{{ product.name }}"/>
+    <div class="main-product-image" *ngIf="product.picture">
+      <img [src]="product.picture" alt="{{ product.name }}" (click)="showImageZoom = true" title="Click to zoom" />
+      <button type="button" class="download-image" (click)="downloadProductImage()">Download image</button>
+    </div>
 
     <div class="product-details-middle">
 
@@ -51,6 +54,11 @@
 
   </div>
 
+</div>
+
+<div *ngIf="showImageZoom" class="image-zoom-overlay" (click)="closeImageZoom()" role="dialog" aria-label="Zoomed product image">
+  <button type="button" class="close-zoom" aria-label="Close zoom" (click)="closeImageZoom()">&times;</button>
+  <img [src]="product.picture" [alt]="product.name" (click)="$event.stopPropagation()" />
 </div>
 
 <div *ngIf="similarProducts && similarProducts.length > 0" >

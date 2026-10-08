@@ -57,4 +57,23 @@ public class AzureBlobService
 
         return blobClient.Uri.ToString();
     }
+
+    public async Task<(byte[] Content, string ContentType, string FileName)> DownloadImageAsync(string imageUrl)
+    {
+        if (!Uri.TryCreate(imageUrl, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps)
+            throw new ArgumentException("Invalid image URL.");
+
+        var serviceClient = new BlobServiceClient(_storageConnectionString);
+        if (!string.Equals(uri.Host, serviceClient.Uri.Host, StringComparison.OrdinalIgnoreCase))
+            throw new ArgumentException("Image is not stored in the configured blob account.");
+
+        var containerName = uri.AbsolutePath.Trim('/').Split('/', 2)[0];
+        var blobName = Uri.UnescapeDataString(uri.AbsolutePath.Trim('/').Split('/', 2).ElementAtOrDefault(1) ?? string.Empty);
+        if (string.IsNullOrWhiteSpace(containerName) || string.IsNullOrWhiteSpace(blobName))
+            throw new ArgumentException("Invalid image URL.");
+
+        var blobClient = serviceClient.GetBlobContainerClient(containerName).GetBlobClient(blobName);
+        var download = await blobClient.DownloadContentAsync();
+        return (download.Value.Content.ToArray(), download.Value.Details.ContentType ?? "application/octet-stream", Path.GetFileName(blobName));
+    }
 }

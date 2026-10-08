@@ -34,6 +34,7 @@ export class ProductDetailsComponent implements OnInit {
   toastMessage = '';
   showToastMessage = false;
   toastRedirect: 'cart' | 'wishlist' | 'error' | 'success' | null = null;
+  showImageZoom = false;
 
   @ViewChild('reviewForm') reviewFormElement!: ElementRef;
   @ViewChild('topElement') topElement: ElementRef | undefined;
@@ -202,5 +203,23 @@ export class ProductDetailsComponent implements OnInit {
 
   navigateToProduct(productId: number): void {
     this.router.navigate(['/public/product', productId]);
+  }
+
+  closeImageZoom(): void {
+    this.showImageZoom = false;
+  }
+
+  downloadProductImage(): void {
+    this.productService.downloadProductImage(this.product.id).subscribe({
+      next: blob => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${this.product.name.replace(/[^a-z0-9-_]/gi, '_')}-image`;
+        link.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => this.showToast('Image download failed.')
+    });
   }
 }

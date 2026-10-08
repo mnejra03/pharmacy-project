@@ -82,6 +82,10 @@ export class ProductServicesService {
     return this.http.post<{ imageUrl: string }>(`${this.baseUrl}/images/products`, formData);
   }
 
+  downloadProductImage(productId: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/products/${productId}/image`, { responseType: 'blob' });
+  }
+
   updateProduct(product: Product): Observable<Product> {
     return this.http.put<Product>(`${this.baseUrl}/PutProductEndpoint/${product.id}`, product);
   }
