@@ -1,0 +1,459 @@
+.checkout-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2, h3 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #0d4712;
+  font-family: Poppins, sans-serif;
+}
+
+.stage-title {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.order-summary, .user-info, .delivery-method, .payment-method {
+  background: #ffffff;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.order-details p,
+.user-info label,
+.delivery-method label,
+.payment-method label {
+  margin: 0.5rem 0;
+}
+
+.cart-items {
+  margin-top: 1rem;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  flex: 2;
+  font-weight: bold;
+}
+
+.item-quantity,
+.item-price,
+.item-total {
+  flex: 1;
+  text-align: right;
+}
+
+.total-price {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+}
+
+.order-form input,
+.order-form select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.first-stage-button{
+  margin-left: 725px;
+  margin-top: 20px;
+}
+.stage-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+button {
+  padding: 0.7rem 1.5rem;
+  right: 30px;
+  background-color: #1c8a24;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0d4712;
+}
+.bottom-buttons{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+button[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.checkout-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  padding: 1rem 0.5rem;
+  color: #5e5d5d;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.step-number {
+  width: 30px;
+  background-color: black;
+  height: 30px;
+  margin: auto;
+  border-radius: 50%;
+  color: #ffffff;
+  line-height: 30px;
+  font-weight: bold;
+}
+
+.step-title {
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.active {
+  color: #1c8a24;
+  opacity: 1;
+}
+
+.active .step-number {
+  background-color: #1c8a24;
+}
+
+.completed {
+  opacity: 1;
+  color: #4caf50;
+}
+
+.completed .step-number {
+  background-color: #4caf50;
+}
+.order-detailss{
+  display: flex;
+  justify-content: space-between;
+}
+.order-details{
+  border:2px solid #0d4712;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-radius: 20px;
+  padding-bottom: 20px;
+}
+.order-details p{
+  color: #1c8a24;
+}
+.first-stage h3{
+  text-align: center;
+  color: #0d4712;
+}
+.products{
+  border:2px solid #0d4712;
+  border-radius: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 20px;
+  margin-top: 40px;
+}
+.with-border {
+  border-bottom: 2px solid #0d4712;
+}
+.products-details p{
+  color: #1c8a24;
+}
+.products-details .name{
+  font-weight: bold;
+}
+.total-price{
+  color: #1c8a24;
+}
+
+.user-data {
+  border: 2px solid #0d4712;
+  border-radius: 20px;
+  padding: 30px;
+  background-color: #f4f4f4;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-data h2 {
+  text-align: center;
+  color: #0d4712;
+  margin-bottom: 40px;
+}
+
+.data {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.first-user-data, .second-user-data {
+  width: 48%;
+}
+
+.first-user-data div, .second-user-data div {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+  color: #0d4712;
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 93%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-color: #0d4712;
+  outline: none;
+}
+
+input::placeholder {
+  color: #888;
+}
+.delivery {
+  border: 2px solid #0d4712;
+  border-radius: 20px;
+  padding: 30px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+.payment {
+  border: 2px solid #0d4712;
+  border-radius: 20px;
+  padding: 30px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.delivery h2 {
+  color: #0d4712;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.payment h2 {
+  color: #0d4712;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+label {
+  display: flex; /* Koristimo flexbox za horizontalni raspored */
+  align-items: center; /* Poravnava tekst i radio button u centar vertikalno */
+  font-size: 16px;
+  color: #1c8a24;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+input[type="radio"] {
+  accent-color: #0d4712; /* Promjena boje radio dugmeta */
+  width: 25px;
+  margin-top: 0;
+}
+
+input[type="radio"]:checked {
+  background-color: #0d4712;
+  border-color: #0d4712;
+}
+
+.delivery label:hover {
+  color: #0d4712;
+}
+.payment label:hover {
+  color: #0d4712;
+}
+label span {
+  transition: color 0.3s ease, font-weight 0.3s ease;
+}
+
+input[type="radio"]:checked + span {
+  font-weight: bold;
+  color: #0d4712;
+}
+.product-image {
+  width: 100px;
+  height: auto;
+  box-shadow: 0 0 10px rgb(13, 71, 18);
+  margin-right: 10px;
+}
+.product {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.required {
+  margin-left: 5px;
+  color: red;
+}
+
+.error {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+.card-details {
+  border: 2px solid #0d4712;
+  border-radius: 20px;
+  padding: 24px 30px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.stripe-card-element {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: border-box;
+}
+input.ng-invalid.ng-touched,
+input.invalid {
+  border: 2px solid red;
+}
+
+label.required::after {
+  content: ' *';
+  color: red;
+}
+
+.highlight {
+  animation: flash 0.5s ease-in-out 3;
+  border: 2px solid red !important;
+}
+
+@keyframes flash {
+  0%, 100% { background-color: transparent; }
+  50% { background-color: rgba(255, 0, 0, 0.1); }
+}
+.user-data {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+/* Stil za iskačući prozor */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden; /* Modal je nevidljiv po defaultu */
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+.card-details{
+  border:2px solid #0d4712;
+  border-radius: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.card-details label{
+  margin-bottom: 10px;
+  margin-left: 5px;
+}
+.card-details input{
+  margin-bottom: 20px;
+}
+.required {
+  color: red;
+  font-weight: bold;
+}
+.error-modal {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  background: white;
+  border: 1px solid #ff0000;
+  padding: 20px;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgb(241, 24, 24);
+}
+.error-modal button{
+  margin-left: 140px;
+}
+.error-modal-delivery {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  background: white;
+  border: 1px solid #ff0000;
+  padding: 20px;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgb(241, 24, 24);
+}
+.error-modal-delivery button{
+  margin-left: 80px;
+}

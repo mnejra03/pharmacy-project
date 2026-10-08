@@ -1,0 +1,29 @@
+<section class="media-page">
+  <h1>Slike reklama i logotipi brendova</h1>
+  <p class="hint">Odaberi novu sliku i sačuvaj je. Dozvoljene su slike do 5 MB.</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <h2>Reklame</h2>
+  <div class="media-grid">
+    <article class="media-card" *ngFor="let ad of advertisements">
+      <img [src]="ad.imageURL" [alt]="ad.title" />
+      <h3>{{ ad.title }}</h3>
+      <input type="file" accept="image/*" (change)="selectAdvertisementFile(ad.id, $event)" />
+      <button type="button" [disabled]="!advertisementFiles[ad.id] || savingAdvertisementId === ad.id" (click)="saveAdvertisementImage(ad)">
+        {{ savingAdvertisementId === ad.id ? 'Upload...' : 'Sačuvaj sliku reklame' }}
+      </button>
+    </article>
+  </div>
+
+  <h2>Logotipi brendova</h2>
+  <div class="media-grid">
+    <article class="media-card" *ngFor="let brand of brands">
+      <img [src]="brand.logoUrl" [alt]="brand.name" />
+      <h3>{{ brand.name }}</h3>
+      <input type="file" accept="image/*" (change)="selectBrandFile(brand.id, $event)" />
+      <button type="button" [disabled]="!brandFiles[brand.id] || savingBrandId === brand.id" (click)="saveBrandLogo(brand)">
+        {{ savingBrandId === brand.id ? 'Upload...' : 'Sačuvaj logo' }}
+      </button>
+    </article>
+  </div>
+</section>

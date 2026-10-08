@@ -1,0 +1,19 @@
+<div class="brands-section">
+  <div class="brands-title">
+    <h2>Brands</h2>
+  </div>
+
+  <div class="brands-wrapper">
+    <button class="arrow-button left-arrow" (click)="scrollLeft()">&#10094;</button>
+
+    <div class="brands-container">
+      <div class="brands-list" #brandsList>
+        <div *ngFor="let brand of brands" class="brand-item" [routerLink]="['/public/brands-products', brand.id]">
+          <img [src]="brand.logoUrl" [alt]="brand.name" class="brand-logo" />
+        </div>
+      </div>
+    </div>
+
+    <button class="arrow-button right-arrow" (click)="scrollRight()">&#10095;</button>
+  </div>
+</div>

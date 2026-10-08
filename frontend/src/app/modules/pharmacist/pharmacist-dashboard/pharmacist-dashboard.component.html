@@ -1,0 +1,68 @@
+<div class="profile-container">
+  <form (ngSubmit)="updateProfile()">
+    <div class="form-group">
+
+      <h2>Welcome, {{ profile.firstName }}</h2>
+
+      <label>Profile photo:</label>
+      <img *ngIf="displayedProfileImageUrl" [src]="displayedProfileImageUrl" class="rounded-full w-32 h-32" />
+
+      <div class="changePhoto">
+        <label for="profileImage" class="custom-upload-button">Change profile photo</label>
+        <input id="profileImage" type="file" (change)="onFileChange($event)" accept="image/*" hidden />
+      </div>
+
+      <div class="email">
+        <label>Email:</label>
+        <input type="email" [(ngModel)]="profile.email" name="email" required />
+      </div>
+
+
+      <div class="name">
+        <label>Pharmacist:</label>
+        <input type="text" [value]="profile.firstName + ' ' + profile.lastName" readonly />
+      </div>
+
+      <div class="employment-date">
+        <label>Employment date:</label>
+        <input type="text" [value]="profile.employmentDate | date:'dd.MM.yyyy'" readonly />
+      </div>
+
+      <div class="username">
+        <label>Username: </label>
+        <input type="text" [(ngModel)]="profile.username" name="username" required />
+      </div>
+
+      <div class="change-password">
+        <button type="button" (click)="showPasswordModal = true">Change password</button>
+      </div>
+
+
+      <div class="save-button">
+        <button type="submit">Save changes</button>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+<div class="modal-overlay" *ngIf="showPasswordModal">
+  <div class="modal-content">
+
+    <form (ngSubmit)="changePassword()">
+      <label>Old password:</label>
+      <input type="password" [(ngModel)]="passwordData.oldPassword" name="oldPassword" required />
+
+      <label>New password:</label>
+      <input type="password" [(ngModel)]="passwordData.newPassword" name="newPassword" required minlength="8" />
+
+      <label>Confirm new password:</label>
+      <input type="password" [(ngModel)]="passwordData.confirmPassword" name="confirmPassword" required />
+
+      <div class="modal-buttons">
+        <button type="submit">Save changes</button>
+        <button type="button" (click)="showPasswordModal = false">Discard</button>
+      </div>
+    </form>
+  </div>
+</div>

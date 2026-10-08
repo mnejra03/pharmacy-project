@@ -1,0 +1,210 @@
+<!-- public-layout.component.html -->
+<header class="header">
+  <div class="search-bar">
+    <div class="logo">
+      <a routerLink="/public/home" routerLinkActive="active">
+        <img src="images/logo.jpg"/>
+      </a>
+    </div>
+
+    <div class="search">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+        placeholder="Search products"
+      />
+      <div *ngIf="searchResults.length > 0" class="search-results">
+        <ul>
+          <li *ngFor="let product of searchResults" (click)="goToProduct(product.id)">
+            {{ product.name }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="header-icons">
+      <a routerLink="/public/wish-list" routerLinkActive="active" class="wishlist-link">
+        <img src="images/wishlist.png" class="icon"> Wish list
+        <span *ngIf="wishListCount > 0" class="badge">{{ wishListCount }}</span>
+      </a>
+
+
+      <a *ngIf="isCustomerLoggedIn()"
+         routerLink="/public/my-orders"
+         routerLinkActive="active"
+         class="orders-link">
+        <img src="images/online-shopping.png" class="icon"> My Orders
+      </a>
+
+
+      <ng-container *ngIf="!isCustomerLoggedIn()">
+        <a routerLink="/auth/login" routerLinkActive="active">
+          <img src="images/login.png" class="icon"> Log in
+        </a>
+      </ng-container>
+
+      <a routerLink="/public/cart" routerLinkActive="active">
+        <img src="images/cart.jpg" class="icon"> Cart
+      </a>
+
+      <a *ngIf="isCustomerLoggedIn()" (click)="openRecipes()" class="recipes-button">
+        <img src="images/3802177.png" class="icon"> My recipes
+      </a>
+    </div>
+  </div>
+
+  <nav class="navigation">
+    <ul>
+      <li><a routerLink="/public/your-health" routerLinkActive="active">Your health</a></li>
+      <li><a routerLink="/public/beauty-and-care" routerLinkActive="active">Beauty and care</a></li>
+      <li><a routerLink="/public/childcare" routerLinkActive="active">Childcare</a></li>
+      <li><a routerLink="/public/skin-protection" routerLinkActive="active">Skin protection</a></li>
+      <li><a routerLink="/public/devices" routerLinkActive="active">Devices</a></li>
+    </ul>
+    <div *ngIf="isCustomerLoggedIn()" class="logout-container">
+      <button (click)="logout()" class="logout-button">
+        <i></i> Logout
+      </button>
+    </div>
+  </nav>
+</header>
+
+
+
+<main>
+  <router-outlet></router-outlet>
+</main>
+
+<div class="custom-modal-overlay-logout" *ngIf="showLogoutModal">
+  <div class="custom-modal-logout">
+    <h2>Log out</h2>
+    <p>Do you want to log out?</p>
+    <div class="modal-buttons-logout">
+      <button (click)="confirmLogout()">Yes</button>
+      <button (click)="cancelLogout()">No</button>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="custom-modal-overlay" *ngIf="showRecipeModal">
+  <div class="custom-modal">
+    <button class="close-btn" (click)="closeRecipeModal()">X</button>
+    <div class="modal-header">
+      <h2>My recipes</h2>
+    </div>
+
+    <div class="modal-body">
+      <button class="btn-add" (click)="toggleAddRecipeForm()">
+        + Add new recipe
+      </button>
+
+      <div *ngIf="errorMessage" class="error-box">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Forma za dodavanje recepta -->
+      <div *ngIf="showAddForm" class="add-recipe-form mt-4">
+        <form (ngSubmit)="addRecipe()" #recipeForm="ngForm">
+          <div class="doctorsData">
+            <div class="doctorsData-firstname">
+              <label>Doctor's firstname:</label>
+              <input type="text" name="doctorFirstname" [(ngModel)]="newRecipe.doctorFirstname" required>
+            </div>
+            <div class="doctorsData-lastname">
+              <label>Doctor's lastname:</label>
+              <input type="text" name="doctorLastname" [(ngModel)]="newRecipe.doctorLastname" required>
+            </div>
+          </div>
+          <div>
+            <label>Recipe image:</label>
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" required>
+          </div>
+          <div *ngIf="previewUrl" class="mt-2">
+            <img [src]="previewUrl" alt="Preview" style="max-width: 200px;">
+          </div>
+
+          <button type="button" (click)="addRecipe()">
+            Add
+          </button>
+        </form>
+      </div>
+
+      <div *ngIf="successMessage" class="alert-success">
+        {{ successMessage }}
+      </div>
+
+      <!-- Prikaz postojećih recepata -->
+      <div *ngIf="recipes.length === 0">No recipes.</div>
+      <div class="container">
+        <table class="custom-table">
+          <thead>
+          <tr class="header-row">
+            <th class="header-cell">Doctor</th>
+            <th class="header-cell">Status</th>
+            <th class="header-cell">Date of Issue</th>
+            <th class="header-cell">Image</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let recipe of recipes" class="data-row">
+            <td class="data-cell">{{ recipe.doctorFirstname }} {{ recipe.doctorLastname }}</td>
+            <td class="data-cell"
+                [ngClass]="{
+      'status-na-cekanju': recipe.status === 'Na čekanju',
+      'status-prihvacen': recipe.status === 'Prihvaćen',
+      'status-odbijen': recipe.status === 'Odbijen'
+    }">
+              {{ recipe.status }}
+            </td>
+
+            <td class="data-cell">{{ recipe.dateOfIssue | date:'dd.MM.yyyy HH:mm' }}</td>
+            <td class="data-cell">
+              <img *ngIf="recipe.scan"
+                   [src]="'data:image/png;base64,' + recipe.scan"
+                   alt="Recipe Scan"
+                   class="recipe-image">
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+<footer class="app-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>About us</h4>
+      <p>We are your online destination for healthy living and products that help you feel better every day.</p>
+    </div>
+
+    <div class="footer-section">
+      <h4>Contact</h4>
+      <p>Email: info&#64;aquamar.com</p>
+      <p>Phone: +387 33 123 456</p>
+    </div>
+
+    <div class="footer-section">
+      <h4>Follow us</h4>
+      <div class="social-icons">
+        <a href="#"><img src="images/facebook.png" alt="Facebook"></a>
+        <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 Aquamar – All rights reserved.</p>
+  </div>
+</footer>
+
+

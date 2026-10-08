@@ -1,0 +1,18 @@
+<div class="advertisement-slider">
+
+  <div *ngIf="advertisements.length > 0; else noAdvertisements">
+    <img *ngIf="advertisements[currentAdIndex].imageURL"
+         [src]="advertisements[currentAdIndex].imageURL"
+         [alt]="advertisements[currentAdIndex].title"
+         class="advertisement-image"
+         (error)="onImageError()">
+
+    <p *ngIf="!advertisements[currentAdIndex]?.imageURL" class="no-image-message">
+      Image not available
+    </p>
+  </div>
+
+  <ng-template #noAdvertisements>
+    <p>There are currently no ads.</p>
+  </ng-template>
+</div>

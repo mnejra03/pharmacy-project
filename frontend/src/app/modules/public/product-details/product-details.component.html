@@ -1,0 +1,120 @@
+<div #topElement></div>
+<div *ngIf="product; else loading" class="product">
+  <h2>{{ product.name }}</h2>
+
+  <div class="product-details">
+
+    <img *ngIf="product.picture" [src]="product.picture" alt="{{ product.name }}"/>
+
+    <div class="product-details-middle">
+
+      <p class="review-summary">
+        <a href="#" (click)="toggleReviewDisplay($event)">
+          {{ reviews && reviews.length > 0 ? reviews.length : 0 }} reviews
+        </a>
+        |
+        <a href="#" (click)="toggleReviewForm($event)">Add review</a>
+      </p>
+
+
+      <p class="instock"><strong>In stock:</strong> {{ product.quantityInStock }}</p>
+
+      <p class="price"><strong>Price:</strong>
+
+        <span *ngIf="product.isDiscounted">
+        <s class="oldprice">{{ product.price }} KM</s> <strong>{{ product.discountedPrice | number:'1.2-2'}} KM</strong>
+        </span>
+
+        <span *ngIf="!product.isDiscounted">{{ product.price }} KM</span>
+      </p>
+
+      <div class="cart">
+        <div class="quantity-container">
+        <label for="quantity">Quantity:</label>
+        <input
+          id="quantity"
+          type="number"
+          [(ngModel)]="quantity"
+          min="1"
+          class="quantity-input"
+        />
+
+        <button class="add-to-cart" (click)="addToCart(product)">
+          Add to cart
+        </button>
+          </div>
+      </div>
+
+    </div>
+
+    <p class="description"><strong>Descritpion:</strong> {{ product.description }}</p>
+
+  </div>
+
+</div>
+
+<div *ngIf="similarProducts && similarProducts.length > 0" >
+  <hr>
+  <h3>Similar products</h3>
+  <div class="similar-card" >
+    <div *ngFor="let similar of similarProducts" (click)="navigateToProduct(similar.id)" (click)="toggle($event)">
+      <div class="product-card">
+        <img [src]="similar.picture" alt="{{ similar.name }}">
+        <h4>{{ similar.name }}</h4>
+        <p>{{ similar.description }}</p>
+        <p><strong>{{ similar.price | number:'1.2-2'}} KM</strong></p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="showReviews && reviews && reviews.length > 0" id="reviewsSection" class="reviews">
+  <hr />
+  <h3>Reviews ({{ reviews.length }})</h3>
+  <div *ngFor="let review of reviews" class="review-display">
+    <p><strong class="username">{{ review.userName }}</strong> rated it <strong class="rating">{{ review.rating }}/5</strong></p>
+    <p>{{ review.text }}</p>
+  </div>
+</div>
+
+<div *ngIf="showReviewForm" class="review-form" #reviewForm>
+  <hr>
+  <h4>Add a Review</h4>
+  <form (ngSubmit)="submitReview()">
+    <div class="name">
+      <label for="name">Your name:</label><br />
+      <input id="name" [(ngModel)]="newReview.userName" name="name" required>
+    </div>
+    <div>
+      <label for="rating">Rating:</label>
+      <select id="rating" [(ngModel)]="newReview.rating" name="rating" required>
+        <option *ngFor="let r of [1,2,3,4,5]" [value]="r">{{r}}</option>
+      </select>
+    </div>
+    <div>
+      <label for="comment">Comment:</label><br />
+      <textarea id="comment" [(ngModel)]="newReview.text" name="comment" rows="4" cols="50" required></textarea>
+    </div>
+    <button type="submit" class="add-to-cart-button">Submit</button>
+  </form>
+</div>
+
+<div *ngIf="showToastMessage" class="toast">
+  <p>{{ toastMessage }}</p>
+  <button *ngIf="toastRedirect === 'cart'" (click)="navigateToCart()">Go to cart</button>
+</div>
+
+<div *ngIf="showToastMessage && toastRedirect === 'success'" class="toast success-toast">
+  <p>{{ toastMessage }}</p>
+</div>
+
+<div *ngIf="showToastMessage && toastRedirect === 'error'" class="toast error-toast">
+  <p>{{ toastMessage }}</p>
+</div>
+
+
+<ng-template #loading>
+  <p>Loading product...</p>
+</ng-template>
+

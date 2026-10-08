@@ -1,0 +1,56 @@
+<div class="tittle">
+  <h1>Wishlist</h1>
+</div>
+
+<div *ngIf="wishListProducts.length > 0; else noProducts" class="wish-list-container">
+  <div *ngFor="let product of wishListProducts" class="wish-list-item">
+    <img [src]="product.picture" alt="{{ product.name }}" (click)="navigateToProduct(product.id)">
+    <div class="wish-list-text">
+      <div class="first" (click)="navigateToProduct(product.id)">
+        <h4>{{ product.name }}</h4>
+        <p>{{ product.description }}</p>
+      </div>
+      <div class="second">
+        <p class="price">
+          <strong>{{ product.price | number:'1.0-2' }} KM</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="wishListProducts.length > 0" class="wish-list-actions">
+  <button (click)="showClearConfirm()" class="clear-button">Clear Wishlist</button>
+  <button (click)="openConfirmationModal()" class="add-to-cart-button">Add All to Cart</button>
+</div>
+
+<div class="modal-overlay" *ngIf="showClearConfirmModal">
+  <div class="modal">
+    <h3>Are you sure you want to clear your wishlist?</h3>
+    <div class="modal-buttons">
+      <button  class="confirm-button" (click)="confirmClearWishlist()">Yes</button>
+      <button class="cancel-button" (click)="cancelClearWishlist()">No</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showConfirmationModal" class="modal-overlay">
+  <div class="modal">
+    <h2>Are you sure you want to add all items to the cart?</h2>
+    <button (click)="moveToCart()" class="confirm-button">Yes</button>
+    <button (click)="closeConfirmationModal()" class="cancel-button">No</button>
+  </div>
+</div>
+
+<div *ngIf="showToastMessage" class="toast">
+  <p>{{ toastMessage }}</p>
+  <button (click)="goToCart()">Go to the cart</button> <!-- Dodano dugme -->
+</div>
+
+<div *ngIf="showAlreadyInCartToast" class="toast already-in-cart-toast">
+  <p>{{ alreadyInCartMessage }}</p>
+</div>
+
+<ng-template #noProducts>
+  <p class="no-products-message">Your wish list is empty!</p>
+</ng-template>

@@ -1,0 +1,27 @@
+<div class="products-list">
+  <div *ngIf="brand?.description" class="brand-details">
+    <!--<h2 class="brand-name">{{ brand.name }}</h2>-->
+    <div class="brand-logo-desc">
+      <img [src]="brand.logoUrl" [alt]="brand.name" class="brand-logo" />
+      <p class="brand-description">{{ brand.description }}</p>
+    </div>
+  </div>
+
+
+
+  <div *ngIf="products.length > 0" class="products-grid">
+    <div *ngFor="let product of products" class="product-item">
+      <img [src]="product.picture" alt="{{ product.name }}" class="product-image" (click)="navigateToProduct(product.id)" />
+      <div class="product-info">
+        <h2 class="product-name">{{ product.name }}</h2>
+        <p class="product-description">{{ product.description }}</p>
+        <p class="product-price">{{ product.price | currency: 'KM' }}</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="products.length === 0" class="no-products">
+    <p>No products found for this brand.</p>
+  </div>
+</div>

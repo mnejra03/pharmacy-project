@@ -1,0 +1,19 @@
+{
+  "APP": {
+    "TITLE": "Welcome to our app",
+    "DESCRIPTION": "This is an example of localization."
+  },
+  "LOGIN": {
+    "TITLE": "Login",
+    "ERROR": "Login failed. Please try again.",
+    "USERNAME_LABEL": "Username",
+    "USERNAME_PLACEHOLDER": "Enter your username",
+    "PASSWORD_LABEL": "Password",
+    "PASSWORD_PLACEHOLDER": "Enter your password",
+    "SAVE_LOGIN": "Remember me",
+    "BUTTON": "Sign In",
+    "ERROR_MESSAGE": "An error occurred during login."
+  }
+
+}
+

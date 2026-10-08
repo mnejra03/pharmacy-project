@@ -1,0 +1,55 @@
+<div class="tittle">
+  <h1>Cart</h1>
+</div>
+
+<div *ngIf="cart.length > 0; else noItems" class="cart-container">
+  <div *ngFor="let item of cart" class="cart-item">
+    <button class="close-button" (click)="removeFromCart(item)">&#x2715;</button>
+    <img [src]="item.picture" alt="{{ item.name }}" (click)="navigateToProduct(item.id)">
+    <div class="cart-text">
+      <div class="first" (click)="navigateToProduct(item.id)">
+        <h4>{{ item.name }}</h4>
+        <p>{{ item.description }}</p>
+      </div>
+      <div class="second">
+        <div class="quantity-wrapper">
+          <button class="qty-btn" (click)="decreaseQuantity(item)">−</button>
+          <input type="number" min="1" [(ngModel)]="item.quantity" (change)="updateItemTotal(item)">
+          <button class="qty-btn" (click)="increaseQuantity(item)">+</button>
+        </div>
+        <p class="price">
+          <strong>
+            {{
+              (item.discountedPrice && item.discountedPrice < item.price ? item.discountedPrice : item.price) * item.quantity
+                | number:'1.0-2'
+            }} KM
+          </strong>
+        </p>
+
+      </div>
+      </div>
+    </div>
+  </div>
+<div *ngIf="cart.length > 0" class="cart-total">
+  <strong>Total price:</strong> {{ totalPrice | number:'1.2-2' }} KM
+</div>
+<div *ngIf="cart.length > 0" class="buttons" >
+  <button class="continue-button" (click)="continueShopping()">Continue shopping</button>
+  <button class="buy-button" (click)="buyNow()">Buy now</button>
+
+</div>
+<!-- Buy Now Modal -->
+<div class="custom-modal-overlay" *ngIf="showBuyNowModal">
+  <div class="custom-modal">
+    <h2>Proceed to Checkout</h2>
+    <p>You are already logged in. Do you want to finish your purchase?</p>
+    <div class="modal-buttons">
+      <button (click)="confirm()">Yes</button>
+      <button (click)="confirm()">No</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #noItems>
+  <p class="no-items-message">Your cart is empty!</p>
+</ng-template>

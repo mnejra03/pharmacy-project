@@ -1,0 +1,81 @@
+<div class="p-4">
+  <h2 class="text-2xl font-semibold mb-4">ORDERS</h2>
+
+  <table class="table-auto w-full border">
+    <thead class="bg-green-100">
+    <tr>
+      <th class="border px-4 py-2">ID</th>
+      <th class="border px-4 py-2">Order Date</th>
+      <th class="border px-4 py-2">Status</th>
+      <th class="border px-4 py-2">Total Price</th>
+      <th class="border px-4 py-2">Customer</th>
+      <th class="border px-4 py-2">Payment Method</th>
+      <th class="border px-4 py-2">Shipping Address</th>
+      <th class="border px-4 py-2">Order Details</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let order of orders">
+      <td class="border px-4 py-2">{{ order.id }}</td>
+      <td class="border px-4 py-2">{{ order.orderDate | date:'short' }}</td>
+      <td class="border px-4 py-2">
+
+        <ng-container *ngIf="order.isSupplyOrder; else noEdit">
+          <select
+            class="border p-1 rounded"
+            [value]="order.status"
+            (change)="changeStatus(order, $event)"
+            [disabled]="order.status === 'Approved' || order.status === 'Rejected'">
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </ng-container>
+        <ng-template #noEdit>
+          {{ order.status }}
+        </ng-template>
+      </td>
+
+      <td class="border px-4 py-2">{{ order.totalPrice }} KM</td>
+      <td class="border px-4 py-2">{{ order.myAppUser?.firstName }} {{ order.myAppUser?.lastName }}</td>
+      <td class="border px-4 py-2">{{ order.paymentMethod }}</td>
+      <td class="border px-4 py-2">{{ order.shippingAddress }}</td>
+      <td class="border px-4 py-2">
+        <button class="text-green-700 hover:underline" (click)="showDetails(order)">
+          Order Details
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="modal" [class.show]="selectedOrder">
+    <div class="modal-content">
+      <span class="close" (click)="closeDetails()">&times;</span>
+      <h3>Order Details #{{ selectedOrder?.id }}</h3>
+      <p><strong>Status:</strong> {{ selectedOrder?.status }}</p>
+      <p><strong>Order Date:</strong> {{ selectedOrder?.orderDate | date:'short' }}</p>
+      <p><strong>Total Price:</strong> {{ selectedOrder?.totalPrice }} KM</p>
+      <p><strong>Payment Method:</strong> {{ selectedOrder?.paymentMethod }}</p>
+      <p><strong>Shipping Address:</strong> {{ selectedOrder?.shippingAddress }}</p>
+
+      <h4 class="mt-4">Order Items:</h4>
+      <table class="modal-table">
+        <thead>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price per unit</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let detail of orderDetails">
+          <td>{{ detail.product.name }}</td>
+          <td>{{ detail.qty }}</td>
+          <td>{{ detail.pricePerUnit }} KM</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+<div class="filter-sort">
+  <label for="sortSelect">Sort:</label>
+  <select [(ngModel)]="selectedSortOption" id="sortSelect">
+    <option value="">No sort</option>
+    <option value="priceAsc">Price: growing</option>
+    <option value="priceDesc">Price: decreasing</option>
+    <option value="nameAsc">Name: A - Z</option>
+    <option value="nameDesc">Name: Z - A</option>
+  </select>
+</div>
+
+<div class="product-list-container">
+  <div class="product-item" *ngFor="let product of sortedProducts">
+
+  <div class="product-image" (click)="goToProduct(product.id)">
+      <img [src]="product.picture" alt="{{ product.name }}">
+
+      <!-- Popust u uglu -->
+      <div class="discount-badge" *ngIf="product.isDiscounted">
+        -{{ product.discountPercentage }}%
+      </div>
+    </div>
+
+
+    <div class="product-details">
+      <h3 class="product-title">{{ product.name }}</h3>
+
+
+      <!-- Cijene -->
+      <div class="product-prices">
+        <span class="new-price">
+          {{ getDiscountedPrice(product) | number:'1.2-2' }} KM
+        </span>
+        <span class="old-price" *ngIf="product.isDiscounted">
+          {{ product.price | number:'1.2-2' }} KM
+        </span>
+      </div>
+
+      <div class="icons">
+        <a class="icon-btn" title="Dodaj u korpu"><img src="images/cart1.png" (click)="addToCart(product)"></a>
+        <a class="icon-btn" title="Dodaj na listu želja" (click)="$event.stopPropagation()"  (click)="toggleWishList(product, $event)">
+          <img [src]="isInWishList(product) ? 'images/red-heart.png' : 'images/heart.png'" alt="">
+        </a>
+      </div>
+    </div>
+
+    <div class="product-details-description">
+      <p>{{ product.description | slice:0:80 }}{{ product.description.length > 120 ? '...' : '' }}</p>
+
+    </div>
+  </div>
+</div>
+<div *ngIf="showToastMessage" class="toast">
+  <p>{{ toastMessage }}</p>
+  <button *ngIf="toastRedirect === 'wishlist'" (click)="navigateToWishList()">Go to wishlist</button>
+  <button *ngIf="toastRedirect === 'cart'" (click)="navigateToCart()">Go to cart</button>
+</div>

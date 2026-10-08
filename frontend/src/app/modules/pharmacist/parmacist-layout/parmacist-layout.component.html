@@ -1,0 +1,40 @@
+<div class="pharmacist-layout">
+  <aside class="sidebar">
+    <nav>
+      <ul>
+        <li><a routerLink="/pharmacist/dashboard"><i class="fas fa-home"></i>  Home</a></li>
+        <li><a routerLink="/pharmacist/notifications"><i class="fas fa-bell"></i> Notifications</a></li>
+        <li><a routerLink="/pharmacist/stock"><i class="fas fa-warehouse"></i>  Stock</a></li>
+        <li><a routerLink="/pharmacist/recipes"><i class="fas fa-file-medical"></i>  Recipes</a></li>
+        <li><a routerLink="/pharmacist/my-orders"><i class="fas fa-shopping-cart"></i> My Orders</a></li>
+        <li><a routerLink="/pharmacist/customer-order"><i class="fas fa-shopping-cart"></i> Customer Orders</a></li>
+      </ul>
+    </nav>
+
+    <div class="logout-container">
+      <button (click)="logout()" class="logout-button">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+
+    <section class="pharmacist-content">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>
+<!-- Custom Modal -->
+<div class="custom-modal-overlay" *ngIf="showLogoutModal">
+  <div class="custom-modal">
+    <h2>Log out</h2>
+    <p>Do you want to log out?</p>
+    <div class="modal-buttons">
+      <button (click)="confirmLogout()">Yes</button>
+      <button (click)="cancelLogout()">No</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+.brands-title h2{
+  font-family:Poppins,sans-serif;
+  font-weight: normal;
+  text-align: center;
+  border-bottom: 2px solid #c6dac9;
+  margin:0px 700px;
+
+  display: inline-block;
+  font-size: 24px;
+  color: #355038; /* tamnozelena */
+  border-bottom: 2px solid #c6dac9; /* jako svijetla zelena crta */
+}
+.brands-title{
+  margin-top: 50px;
+
+}
+.brands-wrapper {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.brands-container {
+  overflow: hidden;
+  padding: 0 60px;
+}
+
+.brands-list {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 20px;
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE i Edge */
+}
+
+.brands-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.brand-item {
+  flex: 0 0 auto;
+  min-width: 100px;
+  text-align: center;
+}
+
+.brand-logo {
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+/* Strelice */
+.arrow-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 10px 15px;
+  z-index: 10;
+  transition: background-color 0.3s ease;
+}
+
+.arrow-button:hover {
+  background-color: #1b5e20;
+  color: white;
+}
+
+.left-arrow {
+  left: calc(50% - 500px - 70px)
+}
+
+.right-arrow {
+  right: calc(50% - 500px - 75px);
+}

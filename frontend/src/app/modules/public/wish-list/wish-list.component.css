@@ -1,0 +1,239 @@
+.wish-list-container {
+  margin-top: 20px;
+}
+
+.tittle h1 {
+  color: #0d4712;
+  text-align: center;
+  border-bottom: 2px solid #0d4712;
+  width: 150px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wish-list-container .wish-list-item {
+  display: flex;
+  width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+
+.quantity-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+.wish-list-container .wish-list-text {
+  display: flex;
+}
+.wish-list-container .wish-list-text .first{
+  cursor: pointer;
+  width: 550px;
+  margin-left: 50px;
+}
+.wish-list-container .wish-list-text .second{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 70px;
+}
+.quantity-container button {
+  background-color: #1c8a24;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.quantity-container button:hover {
+  background-color: #1c8a24;
+}
+
+.quantity-container input {
+  width: 40px;
+  text-align: center;
+  font-size: 16px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.wish-list-container .wish-list-item img {
+  width: 100px;
+  height: auto;
+  margin-right: 20px;
+  border-radius: 8px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.wish-list-container .wish-list-item h4 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #0d4712;
+}
+
+.wish-list-container .wish-list-item p {
+  margin: 4px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.wish-list-container .wish-list-item strong {
+  color: #000;
+  font-size: 16px;
+}
+
+.no-products-message {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 18px;
+  color: #747272;
+}
+.toast {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1000;
+  animation: fadeInOut 3s forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.wish-list-actions {
+  width: 935px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 100px;
+}
+.add-to-cart-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clear-button {
+  background-color: #f11818;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clear-button:hover {
+  background-color: #850909;
+}
+.add-to-cart-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.add-to-cart-button:hover {
+  background-color: #218838;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal{
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  display: block;
+  padding: 30px;
+  width: 350px;
+  text-align: center;
+}
+.modal h2{
+  color: #022004;
+}
+.modal .confirm-button{
+  border-radius: 6px;
+  border: none;
+  margin:10px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: #022004;
+  color: white;
+  cursor: pointer;
+}
+.modal .cancel-button{
+  border-radius: 6px;
+  border: none;
+  margin:10px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 400;
+  background-color: rgb(204, 204, 204);
+  cursor: pointer;
+}
+.toast {
+  position: fixed;
+  margin-left: 70px;
+  width: 27%;
+  top: 80px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  z-index: 9999;
+  animation: fadeInOut 3s ease forwards;
+}
+
+.toast button {
+  margin-top: 8px;
+  margin-left: 30px;
+  background: white;
+  color: #4CAF50;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.toast p{
+  margin-left: 20px;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-20px); }
+}

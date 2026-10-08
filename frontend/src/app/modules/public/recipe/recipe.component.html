@@ -1,0 +1,13 @@
+<h2>My Recipes for user id:</h2>
+
+<div *ngIf="recipes.length > 0; else noRecipes">
+  <ul>
+    <li *ngFor="let recipe of recipes">
+      {{ recipe.dateOfIssue | date }} - {{ recipe.doctorFirstname }} {{ recipe.doctorLastname }}
+    </li>
+  </ul>
+</div>
+
+<ng-template #noRecipes>
+  <p>No recipes found.</p>
+</ng-template>

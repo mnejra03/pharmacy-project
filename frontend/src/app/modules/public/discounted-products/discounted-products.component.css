@@ -1,0 +1,249 @@
+*{
+  font-family: "Poppins", sans-serif;
+}
+.minimal-header {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+
+.minimal-header h2 {
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  color: #355038; /* tamnozelena */
+  border-bottom: 2px solid #c6dac9; /* jako svijetla zelena crta */
+}
+.discounted-products-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+ /* padding: 2rem;*/
+  background-color: #f5f5f5;
+  margin-top: 30px;
+}
+
+/* Naslov */
+.discounted-products-container h2 {
+  margin: 1.5rem;
+  text-align: center;
+  color: black;
+  font-weight: normal;
+  border-bottom: 3px solid #0d4712;
+}
+
+
+/* Ograničena širina slider wrappera (isto kao advertisement) */
+.product-slider-wrapper {
+  width: 100%;
+  max-width: 1045px; /* Ovdje usklađuješ širinu sa .advertisement-slider */
+  overflow: hidden;
+  position: relative;
+}
+
+/* Sam slider se ponaša kao traka koja se pomiče */
+.product-slider {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #f47820;
+  color: white;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+
+/* Kartice proizvoda */
+.product-card {
+  position: relative;
+  max-width: 252px;
+  flex: 0 0 25%; /* 4 proizvoda u redu */
+  box-sizing: border-box;
+  padding: 10px 5px 5px 5px;
+  background-color: white;
+  margin: 10px 5px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Slika proizvoda */
+.product-image {
+  width: 80%;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Detalji */
+.product-details {
+  margin-top: 1rem;
+  color: black;
+  font-size: 12px;
+}
+
+.product-prices{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #888;
+  font-size: 12px;
+  margin-right: 10px;
+}
+
+.old-price span {
+  color: #999;
+}
+
+.new-price {
+  color: #1b5e20;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* Strelice (pozicionirane centralno po visini .product-slider-wrapper) */
+.arrow-button {
+  position: absolute;
+  top: 60%;
+  transform: translateY(-50%);
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 10px 15px;
+  z-index: 2;
+  transition: background-color 0.3s ease;
+}
+
+.arrow-button:hover {
+  background-color: #1b5e20;
+  color: white;
+}
+
+.left-arrow {
+  left: calc(50% - 500px - 70px); /* 500px je pola max-width; 30px je gurnuta malo lijevo */
+}
+
+.right-arrow {
+  right: calc(50% - 500px - 75px); /* Gurnuta desno isto kao lijeva */
+}
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Hover ikonice */
+.hover-icons {
+  position: absolute;
+  top: 150%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 10px;
+  opacity: 0;
+
+  z-index: 5;
+  margin-bottom: 70px;
+}
+
+.icon-btn img{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid black;
+  font-size: 18px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.icon-btn:hover {
+  background-color: #f0f0f0;
+}
+
+/* Detalji */
+.product-details {
+  margin-top: 1rem;
+  color: black;
+  font-size: 12px;
+}
+
+/* Sakrij detalje na hover */
+/* Sakrij detalje na hover */
+.product-card:hover .product-details {
+  visibility: hidden;
+  opacity: 0;
+}
+
+
+/* Prikaži ikonice na hover */
+.product-card:hover .hover-icons {
+  opacity: 1;
+}
+
+.product-prices {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.new-price {
+  color: #1b5e20;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.toast {
+  position: fixed;
+  margin-left: 70px;
+  width: 15%;
+  top: 80px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  z-index: 9999;
+  animation: fadeInOut 3s ease forwards;
+}
+
+.toast button {
+  margin-top: 8px;
+  margin-left: 65px;
+  background: white;
+  color: #4CAF50;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.toast p{
+  margin-left: 20px;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-20px); }
+}

@@ -1,0 +1,126 @@
+@charset "UTF-8";
+/* Osnovni reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Header sekcija */
+.header {
+  width: 100%;
+  background-color: #d0eccf; /* Svetlo zelena pozadina */
+  color: #1b5e20; /* Tamno zelena boja teksta */
+  border-bottom: 1px solid #c8e6c9;
+}
+
+/* Search bar - srednji deo */
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  justify-content: center;
+  height: 150px;
+}
+
+.logo img {
+  height: 100px; /* Veličina logotipa */
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  width: 50%;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.search input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #a5d6a7;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+}
+
+.search-button {
+  background-color: #2e7d32; /* Tamno zelena */
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #1b5e20;
+}
+
+/* Navigacija - donji deo */
+.navigation {
+  background-color: #1b5e20; /* Tamno zelena */
+  padding: 12px 0;
+}
+
+.navigation a {
+  margin: 0 20px;
+  font-family: "Cascadia Mono";
+}
+
+.header-icons {
+  display: block;
+  justify-content: flex-end;
+  gap: 15px; /* Razmak između stavki */
+  align-items: center;
+}
+
+.header-icons a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #1b5e20;
+  font-size: 16px; /* Veličina fonta */
+  padding: 5px;
+  font-family: "Cascadia Mono";
+}
+
+.header-icons .icon {
+  width: 25px; /* Širina ikonice */
+  height: 25px; /* Visina ikonice */
+  margin-right: 5px; /* Razmak između ikonice i teksta */
+}
+
+.navigation ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+}
+
+.navigation li {
+  margin: 0 15px; /* Razmak između stavki */
+}
+
+.navigation a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.navigation a:hover,
+.navigation a.active {
+  color: #a5d6a7; /* Svetlija nijansa zelene */
+  border-bottom: 2px solid #a5d6a7; /* Linija ispod aktivne stavke */
+}
+
+/* Glavni deo */
+main {
+  padding: 20px;
+  background-color: #f1f8e9; /* Svetlo zelena pozadina za ceo sadržaj */
+  min-height: 80vh;
+}
+
+/*# sourceMappingURL=public-layout.component.css.map */

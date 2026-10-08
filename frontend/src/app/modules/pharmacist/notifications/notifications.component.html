@@ -1,0 +1,129 @@
+<div class="notifications-container">
+  <h2>Notifications</h2>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading notifications...</p>
+  </div>
+
+  <div *ngIf="!loading && notifications.length === 0" class="no-notifications">
+    <p>You have no new notifications.</p>
+  </div>
+
+  <div *ngIf="!loading && notifications.length > 0" class="notification-list">
+    <div
+      *ngFor="let notification of notifications"
+      class="notification-item"
+      [class.read]="notification.read"
+      [class.unread]="!notification.read">
+
+
+      <div class="notification-header">
+        <span class="notification-icon">{{ getNotificationIcon(notification) }}</span>
+        <h4>{{ notification.title }}</h4>
+        <span class="notification-time">{{ notification.time | date:'dd.MM.yyyy HH:mm' }}</span>
+      </div>
+
+
+      <p class="notification-message">{{ notification.message }}</p>
+
+
+      <div *ngIf="notification.orderId" class="order-info">
+        <p><strong>Order ID:</strong> {{ notification.orderId }}</p>
+        <button (click)="openOrderDetails(notification)" class="btn-view-order">
+          View order
+        </button>
+      </div>
+
+
+      <div class="notification-actions">
+
+        <button
+          *ngIf="!notification.read"
+          (click)="markAsRead(notification)"
+          class="btn-mark-read">
+          ✓ Mark as read
+        </button>
+
+
+        <button
+          (click)="deleteNotification(notification.id)"
+          class="btn-delete">
+          🗑️ Delete
+        </button>
+
+
+        <button
+          *ngIf="canReply(notification)"
+          (click)="toggleReplyBox(notification.id)"
+          class="btn-reply">
+          {{ showReplyBox[notification.id] ? '✕ Close' : '💬 Reply' }}
+        </button>
+      </div>
+
+
+      <div *ngIf="showReplyBox[notification.id]" class="reply-box">
+        <textarea
+          [(ngModel)]="replyMessages[notification.id]"
+          placeholder="Enter your reply..."
+          rows="3">
+        </textarea>
+        <button (click)="sendReply(notification)" class="btn-send-reply">
+          Send reply
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" *ngIf="showOrderModal" (click)="closeOrderModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeOrderModal()">&times;</button>
+
+    <h3>Order Details #{{ selectedOrder?.id }}</h3>
+
+    <div *ngIf="selectedOrder" class="order-details">
+      <p><strong>Payment Method:</strong> {{ selectedOrder.paymentMethod }}</p>
+      <p><strong>Shipping Address:</strong> {{ selectedOrder.shippingAddress || 'N/A' }}</p>
+      <p><strong>Status:</strong>
+        <span class="status-badge" [ngClass]="'status-' + selectedOrder.status.toLowerCase()">
+          {{ selectedOrder.status }}
+        </span>
+      </p>
+      <p><strong>Total Price:</strong> {{ selectedOrder.totalPrice | currency:'KM' }}</p>
+    </div>
+
+    <h4>Products:</h4>
+
+    <div *ngIf="!selectedOrderDetails || selectedOrderDetails.length === 0" class="no-products">
+      <p>No product details available.</p>
+    </div>
+
+    <table *ngIf="selectedOrderDetails && selectedOrderDetails.length > 0" class="products-table">
+      <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price per Unit</th>
+        <th>Total</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of selectedOrderDetails">
+        <td>{{ item.product.name || 'N/A' }}</td>
+        <td>{{ item.qty }}</td>
+        <td>{{ item.pricePerUnit | currency:'KM' }}</td>
+        <td>{{ item.qty * item.pricePerUnit | currency:'KM' }}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="modal-footer">
+      <button class="btn-close-modal" (click)="closeOrderModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+
+
+

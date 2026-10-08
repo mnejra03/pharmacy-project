@@ -1,0 +1,253 @@
+<div class="checkout-container">
+  <h2>Checkout</h2>
+
+  <!-- Navigacija faza -->
+  <div class="checkout-steps">
+    <div
+      class="step"
+      *ngFor="let stage of stages; let i = index"
+      [ngClass]="{ active: i === currentStageIndex, completed: i < currentStageIndex }"
+    >
+      <div class="step-number">{{ i + 1 }}</div>
+      <div class="step-info">
+        <div class="step-title">{{ stage.title }}</div>
+        <div class="step-desc">{{ stage.description }}</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Faza 1: Detalji narudžbe -->
+  <div *ngIf="currentStageIndex === 0" class="first-stage">
+    <div class="order-details">
+      <h2 >Order details</h2>
+
+      <div class="order-detailss">
+        <p><strong>Order ID:</strong> {{ orderId }}</p>
+        <p><strong>Order date:</strong> {{ today | date:'dd.MM.yyyy' }}</p>
+        <p><strong>Total price:</strong> {{ totalPrice | number }} KM</p>
+      </div>
+    </div>
+
+    <div class="products">
+      <h2>Products:</h2>
+      <div class="product" *ngFor="let item of cart; let last = last" [ngClass]="{'products-details': true, 'with-border': !last}">
+        <div class="products-details">
+          <p class="name">{{ item.name }}</p>
+          <p>Quantity: {{ item.quantity }}</p>
+          <p>Price: {{ item.price | number }} KM</p>
+          <p>Total price: {{ item.price * item.quantity | number }} KM</p>
+        </div>
+        <div class="image">
+          <img *ngIf="item.picture" [src]="item.picture" [alt]="item.name" class="product-image" />
+        </div>
+      </div>
+    </div>
+
+
+    <div class="total-price"><strong>Total: {{ totalPrice | number }} KM</strong></div>
+
+    <button class="first-stage-button"(click)="goToNextStage()">Next</button>
+  </div>
+
+  <!-- Faza 2: Podaci o korisniku -->
+  <div *ngIf="currentStageIndex === 1">
+    <form [formGroup]="userForm">
+      <div class="user-data">
+        <h2>User data</h2>
+        <div class="data">
+          <div class="first-user-data">
+            <div>
+              <label for="firstname">Firstname <span class="required">*</span></label>
+              <input id="firstname" #formField formControlName="firstName" placeholder="Firstname" />
+              <div class="error" *ngIf="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid">
+                Firstname is required
+              </div>
+            </div>
+
+            <div>
+              <label for="lastname">Lastname <span class="required">*</span></label>
+              <input id="lastname" #formField formControlName="lastName" placeholder="Lastname" />
+              <div class="error" *ngIf="userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid">
+                Lastname is required
+              </div>
+            </div>
+
+            <div>
+              <label for="email">Email <span class="required">*</span></label>
+              <input id="email" #formField formControlName="email" placeholder="Email" />
+              <div class="error" *ngIf="userForm.get('email')?.touched && userForm.get('email')?.invalid">
+                <span *ngIf="userForm.get('email')?.errors?.['required']">Email is required</span>
+                <span *ngIf="userForm.get('email')?.errors?.['email']">Email format is invalid</span>
+              </div>
+            </div>
+
+            <div>
+              <label for="phone">Phone <span class="required">*</span></label>
+              <input id="phone" #formField formControlName="phone" placeholder="Phone (e.g. +38761234567)" />
+              <div class="error" *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid">
+                Phone is required and must be valid
+              </div>
+            </div>
+          </div>
+
+          <div class="second-user-data">
+            <div>
+              <label for="address">Address <span class="required">*</span></label>
+              <input id="address" #formField formControlName="address" placeholder="Address" />
+              <div class="error" *ngIf="userForm.get('address')?.touched && userForm.get('address')?.invalid">
+                Address is required
+              </div>
+            </div>
+
+            <div>
+              <label for="city">City <span class="required">*</span></label>
+              <input id="city" #formField formControlName="city" placeholder="City" />
+              <div class="error" *ngIf="userForm.get('city')?.touched && userForm.get('city')?.invalid">
+                City is required
+              </div>
+            </div>
+
+            <div>
+              <label for="zipcode">Zip code <span class="required">*</span></label>
+              <input id="zipcode" #formField formControlName="zip" placeholder="Zip code" />
+              <div class="error" *ngIf="userForm.get('zip')?.touched && userForm.get('zip')?.invalid">
+                <span *ngIf="userForm.get('zip')?.errors?.['required']">Zip code is required</span>
+                <span *ngIf="userForm.get('zip')?.errors?.['pattern']">Zip code must be 4-6 digits</span>
+              </div>
+            </div>
+
+            <div>
+              <label for="country">Country <span class="required">*</span></label>
+              <input id="country" #formField formControlName="country" placeholder="Country" />
+              <div class="error" *ngIf="userForm.get('country')?.touched && userForm.get('country')?.invalid">
+                Country is required
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+
+    <div class="products">
+      <h2>Products:</h2>
+      <div class="product" *ngFor="let item of cart; let last = last" [ngClass]="{'products-details': true, 'with-border': !last}">
+        <div class="products-details">
+          <p class="name">{{ item.name }}</p>
+          <p>Quantity: {{ item.quantity }}</p>
+          <p>Price: {{ item.price | number }} KM</p>
+          <p>Total price: {{ item.price * item.quantity | number }} KM</p>
+        </div>
+        <div class="image">
+          <img *ngIf="item.picture" [src]="item.picture" [alt]="item.name" class="product-image" />
+        </div>
+      </div>
+    </div>
+
+    <div class="total-price"><strong>Total: {{ totalPrice | number }} KM</strong></div>
+
+    <div class="bottom-buttons">
+      <button (click)="goToPreviousStage()">Back</button>
+      <button (click)="goToNextStage()">Next</button>
+    </div>
+  </div>
+
+  <!-- Faza 3: Način dostave -->
+  <div *ngIf="currentStageIndex === 2">
+    <div class="delivery">
+      <h2>Delivery method</h2>
+      <label>
+        <input type="radio" [(ngModel)]="deliveryMethod" value="standard" (change)="onDeliveryMethodChange()">
+        <span>Standard delivery - 6 KM</span>
+      </label>
+      <label>
+        <input type="radio" [(ngModel)]="deliveryMethod" value="express" (change)="onDeliveryMethodChange()">
+        <span>Express delivery - 10 KM</span>
+      </label>
+    </div>
+
+    <div class="products">
+      <h2>Products:</h2>
+      <div class="product" *ngFor="let item of cart; let last = last" [ngClass]="{'products-details': true, 'with-border': !last}">
+        <div class="products-details">
+          <p class="name">{{ item.name }}</p>
+          <p>Quantity: {{ item.quantity }}</p>
+          <p>Price: {{ item.price | number }} KM</p>
+          <p>Total price: {{ item.price * item.quantity | number }} KM</p>
+        </div>
+        <div class="image">
+          <img *ngIf="item.picture" [src]="item.picture" [alt]="item.name" class="product-image" />
+        </div>
+      </div>
+    </div>
+
+    <div class="total-price"><strong>Total: {{ totalPrice | number }} KM</strong></div>
+
+    <div class="bottom-buttons">
+      <button (click)="goToPreviousStage()">Back</button>
+      <button  (click)="goToNextStage()">Next</button>
+    </div>
+  </div>
+
+  <!-- Faza 4: Način plaćanja -->
+  <div *ngIf="currentStageIndex === 3">
+    <div class="payment">
+      <h2>Payment method</h2>
+      <label>
+        <input type="radio" name="paymentMethod" value="cash" [(ngModel)]="paymentMethod" (change)="onPaymentMethodChange()">
+        <span>Cash on delivery payment</span>
+      </label>
+      <label>
+        <input type="radio" name="paymentMethod" value="card" [(ngModel)]="paymentMethod" (change)="onPaymentMethodChange()">
+        <span>Card payment</span>
+      </label>
+    </div>
+
+    <div *ngIf="paymentMethod === 'card'" class="card-details">
+      <h3>Enter Card Details</h3>
+      <p *ngIf="isPreparingPayment">Preparing secure payment form...</p>
+      <div #cardElementContainer class="stripe-card-element"></div>
+      <div class="error" *ngIf="paymentErrorMessage">{{ paymentErrorMessage }}</div>
+    </div>
+
+    <div class="products">
+      <h2>Products:</h2>
+      <div class="product" *ngFor="let item of cart; let last = last" [ngClass]="{'products-details': true, 'with-border': !last}">
+        <div class="products-details">
+          <p class="name">{{ item.name }}</p>
+          <p>Quantity: {{ item.quantity }}</p>
+          <p>Price: {{ item.price | number }} KM</p>
+          <p>Total price: {{ item.price * item.quantity | number }} KM</p>
+        </div>
+        <div class="image">
+          <img *ngIf="item.picture" [src]="item.picture" [alt]="item.name" class="product-image" />
+        </div>
+      </div>
+    </div>
+
+    <div class="total-price"><strong>Total: {{ totalPrice | number }} KM</strong></div>
+
+    <div class="bottom-buttons">
+      <button (click)="goToPreviousStage()">Back</button>
+      <button (click)="onSubmitOrder()"  [disabled]="!paymentMethod || isPreparingPayment">Complete the order</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showError" class="error-modal">
+  <p>{{ errorMessage }}</p>
+  <button (click)="closeError()">OK</button>
+</div>
+
+
+<div *ngIf="showDeliveryError" class="error-modal-delivery">
+  <p>Please select a delivery method.</p>
+  <button (click)="closeDeliveryError()">OK</button>
+</div>
+
+
+<div *ngIf="showPaymentError" class="error-modal-payment">
+  <p>{{ paymentErrorMessage || 'Please complete the payment details.' }}</p>
+  <button (click)="closePaymentError()">OK</button>
+</div>

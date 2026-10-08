@@ -1,0 +1,150 @@
+*{font-family: "Poppins", sans-serif;}
+
+.product-list-container{
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #f47820;
+  color: white;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.product-item {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 10px;
+}
+
+.product-prices {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.new-price {
+  font-size: 1.2rem;
+  color: #1b5e20;
+  font-weight: bold;
+  margin-right:  20px;
+}
+
+.old-price {
+  font-size: 1rem;
+  color: #ff0000;
+  text-decoration: line-through;
+}
+.product-image img{
+  height: 200px;
+  width: auto;
+  cursor: pointer;
+}
+.filter-sort {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  font-family: Arial, sans-serif;
+  max-width: 1000px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.filter-sort label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #444;
+}
+
+.filter-sort select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.filter-sort select:focus {
+  border-color: #007bff;
+}
+
+.product-details {
+  width: 100%;
+  margin-left: 50px;
+  margin-top: 20px;
+}
+.product-details h3{
+  font-weight: normal;
+}
+.product-details-description {
+  width: 80%;
+  display: flex ;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+}
+.icons img{
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  margin-right: 20px;
+  border: 1px gray solid;
+  padding: 5px;
+}
+.icons{
+  margin-top: 20px;
+}
+
+.toast {
+  position: fixed;
+  margin-left: 70px;
+  width: 15%;
+  top: 80px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  z-index: 9999;
+  animation: fadeInOut 3s ease forwards;
+}
+
+.toast button {
+  margin-top: 8px;
+  margin-left: 65px;
+  background: white;
+  color: #4CAF50;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.toast p{
+  margin-left: 20px;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-20px); }
+}

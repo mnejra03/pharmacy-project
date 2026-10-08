@@ -1,0 +1,155 @@
+<div class="products-container">
+  <h2>PRODUCT MANAGEMENT</h2>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form">
+    <input formControlName="name" placeholder="Product name" />
+    <div *ngIf="productForm.get('name')?.touched && productForm.get('name')?.invalid" class="error">
+      Name is required (min 2, max 100 characters).
+    </div>
+
+    <input formControlName="description" placeholder="Description" />
+    <div *ngIf="productForm.get('description')?.touched && productForm.get('description')?.errors?.['maxlength']" class="error">
+      Description cannot exceed 500 characters.
+    </div>
+
+    <input type="number" formControlName="price" placeholder="Price" step="0.01" />
+    <div *ngIf="productForm.get('price')?.touched && productForm.get('price')?.invalid" class="error">
+      Price is required and must be greater than 0.
+    </div>
+
+    <input type="number" formControlName="quantityInStock" placeholder="In stock" />
+    <div *ngIf="productForm.get('quantityInStock')?.touched && productForm.get('quantityInStock')?.invalid" class="error">
+      Quantity is required and cannot be negative.
+    </div>
+
+    <select formControlName="brandId">
+      <option [ngValue]="null">-- Choose a brand --</option>
+      <option *ngFor="let b of brands" [ngValue]="b.id">{{ b.name }}</option>
+    </select>
+
+    <select formControlName="categoryId">
+      <option [ngValue]="null">-- Choose a category --</option>
+      <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
+    </select>
+    <div *ngIf="productForm.get('categoryId')?.touched && productForm.get('categoryId')?.invalid" class="error">
+      Category is required.
+    </div>
+
+    <input formControlName="picture" placeholder="Image URL (optional)" />
+    <label>Or upload a product image (maximum 5 MB):</label>
+    <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+    <label class="checkbox-label">
+      <input type="checkbox" formControlName="isDiscounted" />
+      Discounted product
+    </label>
+
+    <input
+      *ngIf="productForm.get('isDiscounted')?.value"
+      type="number"
+      formControlName="discountPercentage"
+      placeholder="Percentage discount (%)"
+      min="1" max="100" step="0.01"
+    />
+    <div *ngIf="productForm.get('isDiscounted')?.value && productForm.get('discountPercentage')?.touched && productForm.get('discountPercentage')?.invalid" class="error">
+      Discount must be between 1 and 100.
+    </div>
+
+    <div *ngIf="imagePreviewUrl || productForm.get('picture')?.value">
+      <label>Preview of the image:</label>
+      <img [src]="imagePreviewUrl || productForm.get('picture')?.value"
+           alt="Preview"
+           style="max-width: 200px; border-radius: 8px; margin-top: 10px;" />
+    </div>
+
+    <div class="button-group">
+      <button type="submit">{{ editing ? 'Save changes' : 'Add product' }}</button>
+      <button type="button" (click)="cancelEdit()" *ngIf="editing" class="cancel-button">Cancel</button>
+    </div>
+  </form>
+
+  <div class="filter-section">
+    <h3>Filter products</h3>
+
+    <!-- ✅ (input) poziva applyFilter() koja ide kroz debounce Subject -->
+    <input
+      type="text"
+      placeholder="Search by name"
+      [(ngModel)]="searchName"
+      (input)="applyFilter()"
+    />
+
+    <select [(ngModel)]="selectedCategory" (change)="applyFilter()">
+      <option [ngValue]="null">All categories</option>
+      <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
+    </select>
+
+    <select [(ngModel)]="selectedBrand" (change)="applyFilter()">
+      <option [ngValue]="null">All brands</option>
+      <option *ngFor="let b of brands" [ngValue]="b.id">{{ b.name }}</option>
+    </select>
+
+    <input
+      type="number"
+      placeholder="Minimum price"
+      [(ngModel)]="minPrice"
+      (input)="applyFilter()"
+    />
+
+    <label>
+      <input type="checkbox" [(ngModel)]="onlyDiscounted" (change)="applyFilter()" />
+      Only discounted
+    </label>
+
+    <button (click)="resetFilter()" class="btn-reset">Reset filter</button>
+  </div>
+
+  <!-- ✅ Loading spinner - prikazuje se dok backend obrađuje filter/paging request -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+
+  <table class="product-table" *ngIf="!isLoading">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Product name</th>
+      <th>Description</th>
+      <th>Price</th>
+      <th>In stock</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let product of products">
+      <td>{{ product.id }}</td>
+      <td>{{ product.name }}</td>
+      <td>{{ product.description }}</td>
+      <td>{{ product.price | currency:'BAM' }}</td>
+      <td>{{ product.quantityInStock }}</td>
+      <td>
+        <button class="btn-warning" (click)="onEdit(product)">Edit</button>
+        <button class="btn-danger" (click)="onDelete(product.id)">Delete</button>
+      </td>
+    </tr>
+    <tr *ngIf="products.length === 0">
+      <td colspan="6" style="text-align: center;">No products found.</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Paginacija van table taga -->
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">←</button>
+    <button
+      *ngFor="let p of pages"
+      (click)="goToPage(p)"
+      [class.active]="p === currentPage">
+      {{ p }}
+    </button>
+    <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">→</button>
+    <span>Page {{ currentPage }} of {{ totalPages }} ({{ totalCount }} total)</span>
+  </div>
+</div>
+
+

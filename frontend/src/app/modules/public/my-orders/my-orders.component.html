@@ -1,0 +1,52 @@
+<!-- my-orders.component.html -->
+<div class="my-orders-container">
+  <h2>My orders</h2>
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading orders...</p>
+  </div>
+
+  <div *ngIf="!loading && orders.length === 0" class="no-orders">
+    <p>You don't have any orders yet.</p>
+    <a routerLink="/public/products" class="btn-shop">Start shopping</a>
+  </div>
+
+  <div *ngIf="!loading && orders.length > 0" class="orders-list">
+    <div *ngFor="let order of orders" class="order-card">
+      <!-- Header -->
+      <div class="order-header">
+        <div class="order-info">
+          <h3>Order #{{ order.id }}</h3>
+          <p class="order-date">{{ order.orderDate | date:'dd.MM.yyyy HH:mm' }}</p>
+        </div>
+        <div class="order-status">
+          <span
+            class="status-badge"
+            [style.background-color]="getStatusColor(order.status)">
+            {{ getStatusIcon(order.status) }} {{ getStatusLabel(order.status) }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Products -->
+      <div class="order-products">
+        <h4>Products:</h4>
+        <ul>
+          <li *ngFor="let item of order.orderDetails">
+            {{ item.productName }} - {{ item.qty }}x ({{ item.pricePerUnit | currency:'KM' }})
+          </li>
+        </ul>
+      </div>
+
+      <!-- Footer -->
+      <div class="order-footer">
+        <div class="order-total">
+          <strong>Total:</strong> {{ order.totalPrice | currency:'KM' }}
+        </div>
+        <div class="order-payment">
+          <strong>Payment method:</strong> {{ order.paymentMethod === 'card' ? 'Card' : 'Cash' }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

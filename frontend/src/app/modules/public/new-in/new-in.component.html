@@ -1,0 +1,43 @@
+<div class="minimal-header">
+  <h2>Latest products</h2>
+</div>
+
+<div class="newin-products-container">
+  <div class="product-slider-wrapper">
+    <div class="product-slider" [style.transform]="transformValue">
+      <div *ngFor="let product of latestProducts" class="product-card" >
+
+        <div class="newin-badge">NEW</div>
+
+        <div class="image-wrapper">
+          <img (click)="navigateToProduct(product.id)" [src]="product.picture" [alt]="product.name" class="product-image">
+
+          <!-- Ikonice koje se prikazuju na hover -->
+          <div class="hover-icons">
+            <a class="icon-btn" title="Dodaj u korpu"><img src="images/cart1.png" (click)="addToCart(product)"></a>
+            <a class="icon-btn" title="Dodaj na listu želja" (click)="$event.stopPropagation()"  (click)="toggleWishList(product, $event)">
+              <img [src]="isInWishList(product) ? 'images/red-heart.png' : 'images/heart.png'" alt="">
+            </a>
+          </div>
+        </div>
+
+        <!-- Tekstualni detalji koji se skrivaju na hover -->
+        <div class="product-details">
+          <h3>{{ product.name }}</h3>
+          <div class="product-prices">
+            <p class="new-price">
+              <span>{{ product.price | number: '1.2-2' }} KM</span>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="showToastMessage" class="toast">
+  <p>{{ toastMessage }}</p>
+  <button *ngIf="toastRedirect === 'wishlist'" (click)="navigateToWishList()">Go to wishlist</button>
+  <button *ngIf="toastRedirect === 'cart'" (click)="navigateToCart()">Go to cart</button>
+</div>
+

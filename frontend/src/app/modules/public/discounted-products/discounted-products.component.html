@@ -1,0 +1,55 @@
+<div class="minimal-header">
+  <h2>Discounted products</h2>
+</div>
+
+<div class="discounted-products-container">
+
+
+  <button class="arrow-button left-arrow" (click)="previousProduct()">&#10094;</button>
+
+  <div class="product-slider-wrapper">
+    <div class="product-slider" [style.transform]="transformValue">
+      <div *ngFor="let product of discountedProducts" class="product-card" >
+
+        <div *ngIf="product.discountedPrice !== undefined && product.discountedPrice < product.price" class="discount-badge">
+          - {{ ((1 - product.discountedPrice / product.price) * 100) | number:'1.0-0' }}%
+        </div>
+
+        <div class="image-wrapper" >
+          <img (click)="navigateToProduct(product.id)" [src]="product.picture" [alt]="product.name" class="product-image">
+
+
+          <div class="hover-icons">
+            <a class="icon-btn" title="Dodaj u korpu" (click)="addToCart(product)">
+              <img src="images/cart1.png" alt="">
+            </a>
+            <a class="icon-btn" title="Dodaj na listu želja" (click)="$event.stopPropagation()"  (click)="toggleWishList(product, $event)">
+              <img [src]="isInWishList(product) ? 'images/red-heart.png' : 'images/heart.png'" alt="">
+            </a>
+          </div>
+        </div>
+
+        <div class="product-details">
+          <h3>{{ product.name }}</h3>
+          <div class="product-prices">
+            <p *ngIf="product.discountedPrice !== undefined && product.discountedPrice < product.price" class="old-price">
+              <span>{{ product.price | number: '1.2-2' }} KM</span>
+            </p>
+            <p class="new-price">
+              <span>{{ product.discountedPrice | number: '1.2-2' }} KM</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="arrow-button right-arrow" (click)="nextProduct()">&#10095;</button>
+</div>
+
+<div *ngIf="showToastMessage" class="toast">
+  <p>{{ toastMessage }}</p>
+  <button *ngIf="toastRedirect === 'wishlist'" (click)="navigateToWishList()">Go to wishlist</button>
+  <button *ngIf="toastRedirect === 'cart'" (click)="navigateToCart()">Go to cart</button>
+</div>
+

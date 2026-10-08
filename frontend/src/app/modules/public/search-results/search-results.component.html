@@ -1,0 +1,15 @@
+<h1>WORKS RESULTS</h1>
+<div *ngIf="searchResults.length > 0; else noResults">
+  <h2>Search results for "{{ searchQuery }}"</h2>
+  <ul>
+    <li *ngFor="let product of searchResults">
+      <a [routerLink]="['/public/product', product.id]">{{ product.name }}</a>
+    </li>
+  </ul>
+</div>
+
+<ng-template #noResults>
+  <p>No products found for "{{ searchQuery }}".</p>
+</ng-template>
+
+

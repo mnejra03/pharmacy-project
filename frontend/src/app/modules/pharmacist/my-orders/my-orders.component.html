@@ -1,0 +1,31 @@
+<div class="p-4">
+  <h2 class="text-2xl font-bold mb-4">My orders</h2>
+  <table class="min-w-full">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Order type</th>
+      <th>Details</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let order of orders">
+      <td>{{ order.id }}</td>
+      <td>{{ order.orderDate | date:'short' }}</td>
+      <td>{{ order.status }}</td>
+      <td>
+        {{ order.isSupplyOrder ? 'Procurement' : 'Purchase' }}
+      </td>
+      <td>
+        <ul>
+          <li *ngFor="let detail of order.orderDetails">
+            {{ detail.name }} - {{ detail.qty }} pcs
+          </li>
+        </ul>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

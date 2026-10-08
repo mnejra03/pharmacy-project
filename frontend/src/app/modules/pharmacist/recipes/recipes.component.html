@@ -1,0 +1,36 @@
+<div class="p-4">
+  <h2 class="text-2xl font-bold mb-4">RECIPES</h2>
+  <table class="min-w-full ">
+    <thead>
+    <tr class="bg-gray-200 text-left">
+      <th class="px-4 py-2 ">Patient</th>
+      <th class="px-4 py-2 ">Doctor</th>
+      <th class="px-4 py-2 ">Status</th>
+      <th class="px-4 py-2 ">Date of issue</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let recipe of recipes" class="border-t"
+        [ngClass]="{
+      'pending-status': recipe.status === 'Pending',
+      'accepted-status': recipe.status === 'Accepted',
+      'rejected-status': recipe.status === 'Rejected'
+    }">
+      <td class="px-4 py-2 border">{{ recipe.userFullname }}</td>
+      <td class="px-4 py-2 border">{{ recipe.doctorFirstname }} {{ recipe.doctorLastname }}</td>
+      <td class="px-4 py-2 border">
+        <select
+          [(ngModel)]="recipe.status"
+          (change)="updateRecipeStatus(recipe)"
+          class="select-status"
+        >
+          <option value="Pending">Pending</option>
+          <option value="Accepted">Accepted</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </td>
+      <td class="px-4 py-2 border">{{ recipe.dateOfIssue | date:'dd.MM.yyyy HH:mm' }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

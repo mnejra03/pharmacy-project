@@ -1,0 +1,113 @@
+
+<div class="orders-container">
+  <h2>Customer order overview</h2>
+
+  <div *ngIf="orders.length === 0" class="no-orders">
+    There are no orders to display.
+  </div>
+
+  <div class="filters-card">
+
+    <div class="filters-row">
+
+      <input type="number"
+             placeholder="Order ID"
+             [(ngModel)]="searchId">
+
+      <select [(ngModel)]="filterStatus">
+        <option value="">All statuses</option>
+        <option *ngFor="let status of availableStatuses"
+                [value]="status.value">
+          {{ status.label }}
+        </option>
+      </select>
+
+      <input type="number"
+             placeholder="Min total"
+             [(ngModel)]="minTotal">
+
+      <input type="number"
+             placeholder="Max total"
+             [(ngModel)]="maxTotal">
+
+      <input type="date" [(ngModel)]="dateFrom">
+      <input type="date" [(ngModel)]="dateTo">
+
+    </div>
+
+    <div class="filters-actions">
+      <button class="apply-btn" (click)="applyFilters()">
+        Apply filters
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <div *ngFor="let order of filteredOrders" class="order-card">
+    <div class="order-header">
+      <div class="order-info">
+        <div><strong>ID:</strong> {{ order.id }}</div>
+        <div><strong>Date:</strong> {{ order.orderDate | date: 'dd.MM.yyyy HH:mm' }}</div>
+        <div><strong>Address:</strong> {{ order.shippingAddress }}</div>
+        <div><strong>Total:</strong> {{ order.totalPrice | currency:'KM':'symbol':'1.2-2' }}</div>
+      </div>
+
+      <div class="order-status">
+        <span
+          class="status-badge"
+          [style.background-color]="getStatusColor(order.status)">
+          {{ getStatusLabel(order.status) }}
+        </span>
+      </div>
+    </div>
+
+
+    <div class="order-body" *ngIf="canChangeStatus(order)">
+
+      <div class="status-change">
+        <label [for]="'status-' + order.id">Change status:</label>
+
+        <select
+          [(ngModel)]="selectedStatus[order.id!]"
+          class="status-select"
+          [id]="'status-' + order.id">
+
+          <option value="">Select status</option>
+
+          <option
+            *ngFor="let status of availableStatuses"
+            [value]="status.value"
+            [disabled]="status.value === order.status">
+            {{ status.label }}
+          </option>
+
+        </select>
+      </div>
+
+      <div class="order-actions">
+        <button
+          (click)="changeOrderStatus(order.id!)"
+          class="update-button">
+          Update
+        </button>
+
+        <button
+          class="delete-button"
+          (click)="deleteOrder(order.id!)">
+          Delete
+        </button>
+      </div>
+
+    </div>
+
+
+    <div class="order-final" *ngIf="!canChangeStatus(order)">
+      <p>The order status is final and cannot be changed.</p>
+    </div>
+  </div>
+</div>
+
+

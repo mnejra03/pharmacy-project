@@ -1,0 +1,39 @@
+<div class="dashboard-cards">
+  <div class="card">
+    <h3>Total sales today</h3>
+    <p>{{ stats?.todaySales | currency:'BAM':'symbol':'1.2-2' }}</p>
+  </div>
+
+  <div class="card">
+    <h3>Total sales this month</h3>
+    <p>{{ stats?.monthlySales | currency:'BAM':'symbol':'1.2-2' }}</p>
+  </div>
+
+  <div class="card">
+    <h3>Number of orders</h3>
+    <p>{{ stats?.orderCount }}</p>
+  </div>
+
+  <div class="card">
+    <h3>Number of users</h3>
+    <p>{{ stats?.userCount }}</p>
+  </div>
+
+  <div class="card">
+    <h3>The amount of stock</h3>
+    <p>{{ stats?.stockCount }}</p>
+  </div>
+</div>
+
+<div class="chart-container">
+  <h3>SALES OVER TIME</h3>
+  <canvas
+    baseChart
+    [data]="salesChartData"
+    [options]="salesChartOptions"
+    [type]="salesChartType">
+  </canvas>
+</div>
+
+
+

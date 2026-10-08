@@ -1,0 +1,27 @@
+<div class="chat-widget" [class.open]="isOpen">
+  <div class="chat-header" (click)="toggleChat()">
+    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Bot" />
+    <span>Chat with us!</span>
+    <span class="arrow">{{ isOpen ? '▼' : '▲' }}</span>
+  </div>
+
+  <div class="chat-body" *ngIf="isOpen">
+    <div class="chat-message" #scrollMe>
+      <div *ngFor="let msg of messages">
+        <div class="chat-bubble" [ngClass]="msg.from">{{ msg.text }}</div>
+      </div>
+
+    </div>
+
+
+    <div class="chat-input">
+      <input type="text" [(ngModel)]="messageText" (keyup.enter)="sendMessage()" placeholder="Type a message..." />
+      <button (click)="sendMessage()">➤</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="messages.length === 0 && !isOpen">
+  No messages yet.
+</div>
+

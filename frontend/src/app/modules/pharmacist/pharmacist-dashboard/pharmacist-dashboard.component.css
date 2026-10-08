@@ -1,0 +1,217 @@
+.profile-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h2 {
+  font-size: 26px;
+  margin-bottom: 25px;
+  text-align: center;
+  color: rgb(53, 80, 56);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: rgb(53, 80, 56);
+}
+
+.form-group input[type="email"],
+.form-group input[type="text"],
+.form-group input[type="file"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  width: 97%;
+  color: rgb(53, 80, 56);
+}
+.form-group input[readonly] {
+  color: rgb(116, 114, 114);
+}
+.form-group input:focus {
+  outline: none;
+  border-color: rgb(53, 80, 56);
+  box-shadow: 0 0 0 2px rgb(13, 71, 18);
+}
+
+.profile-container img {
+  display: block;
+  margin: 0 auto;
+  width: 220px;
+  height: 270px;
+  border-radius: 50%;
+  border: 3px solid rgb(53, 80, 56);
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.profile-container img:hover {
+  transform: scale(1.05);
+}
+
+button[type="submit"] {
+  background-color: #27ae60;
+  width: 200px;
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+}
+
+.save-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button[type="submit"]:hover {
+  background-color: rgb(53, 80, 56);
+}
+
+.email, .name {
+  display: flex;
+  flex-direction: column;
+}
+.changePhoto .custom-upload-button {
+  display: inline-block;
+  background-color: #27ae60;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  width: 95%;
+}
+
+.custom-upload-button:hover {
+  background-color:  rgb(53, 80, 56);
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.modal-content h2{
+  color: rgb(53, 80, 56);
+}
+
+.modal-content,
+.modal-buttons {
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.change-password button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.change-password button:hover {
+  background-color: rgb(53, 80, 56);
+}
+
+.change-password button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(72, 239, 110, 0.7);
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgb(13, 71, 18);
+}
+
+
+.modal-content form label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.modal-content form input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.modal-buttons button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-buttons button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+
+.modal-buttons button[type="button"] {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-buttons button[type="button"]:hover {
+  background-color: #e53935;
+}

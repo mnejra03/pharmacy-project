@@ -1,0 +1,26 @@
+<div class="p-4">
+  <h2 class="text-2xl font-bold mb-4">STOCK</h2>
+  <table class="min-w-full">
+    <thead>
+    <tr>
+      <th>Product</th>
+      <th>On condition</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let medicine of medicines">
+      <td>{{ medicine.name }}</td>
+      <td>{{ medicine.quantityInStock}}</td>
+      <td>
+        <button
+          *ngIf="medicine.quantityInStock < 10"
+          class="bg-blue-500 text-white px-2 py-1 rounded"
+          (click)="orderMedicine(medicine.id)">
+          Order more
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

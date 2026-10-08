@@ -1,0 +1,43 @@
+<div class="admin-layout">
+  <aside class="sidebar">
+    <nav>
+      <ul>
+        <li><a routerLink="/admin/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+        <li><a routerLink="/admin/users"><i class="fas fa-users"></i> Users</a></li>
+        <li><a routerLink="/admin/products"><i class="fas fa-pills"></i> Products</a></li>
+        <li><a routerLink="/admin/media"><i class="fas fa-images"></i> Images</a></li>
+        <li><a routerLink="/admin/orders"><i class="fas fa-box"></i> Orders</a></li>
+      </ul>
+    </nav>
+
+    <div class="logout-container">
+      <button (click)="logout()" class="logout-button">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="admin-topbar" *ngIf="adminUser">
+      <span>
+        <strong>{{ adminUser.firstName }}</strong> {{ adminUser.lastName }} | {{ adminUser.email }}
+      </span>
+    </div>
+
+    <section class="admin-content">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>
+
+<div class="custom-modal-overlay" *ngIf="showLogoutModal">
+  <div class="custom-modal">
+    <h2>Log out</h2>
+    <p>Do you want to log out?</p>
+    <div class="modal-buttons">
+      <button (click)="confirmLogout()">Yes</button>
+      <button (click)="cancelLogout()">No</button>
+    </div>
+  </div>
+</div>

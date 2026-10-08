@@ -1,0 +1,127 @@
+<div class="users-container">
+  <div class="users-header">
+    <h2>User Management</h2>
+    <button class="btn-add" (click)="showCreateForm = !showCreateForm">
+      {{ showCreateForm ? '✕ Cancel' : '+ Add user' }}
+    </button>
+  </div>
+
+  <!-- CREATE FORMA -->
+  <div *ngIf="showCreateForm" class="create-form-card">
+    <h3>Create new user</h3>
+    <form [formGroup]="createForm" (ngSubmit)="onCreateUser()">
+      <div class="form-row">
+        <div class="form-field">
+          <input formControlName="username" placeholder="Username" />
+          <span class="error" *ngIf="createForm.get('username')?.touched && createForm.get('username')?.invalid">
+            Username required (min 3 characters).
+          </span>
+        </div>
+        <div class="form-field">
+          <input formControlName="firstName" placeholder="First name" />
+          <span class="error" *ngIf="createForm.get('firstName')?.touched && createForm.get('firstName')?.invalid">
+            First name required.
+          </span>
+        </div>
+        <div class="form-field">
+          <input formControlName="lastName" placeholder="Last name" />
+          <span class="error" *ngIf="createForm.get('lastName')?.touched && createForm.get('lastName')?.invalid">
+            Last name required.
+          </span>
+        </div>
+        <div class="form-field">
+          <input type="password" formControlName="password" placeholder="Password" />
+          <span class="error" *ngIf="createForm.get('password')?.touched && createForm.get('password')?.invalid">
+            Password required (min 6 characters).
+          </span>
+        </div>
+      </div>
+      <div class="error" *ngIf="createError">{{ createError }}</div>
+      <button type="submit" class="btn-save">Create user</button>
+    </form>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-card">
+    <h3>Filter users</h3>
+    <div class="filter-row">
+      <input type="text" placeholder="Username"   [(ngModel)]="filterUsername"  (input)="applyFilter()" />
+      <input type="text" placeholder="First name" [(ngModel)]="filterFirstName" (input)="applyFilter()" />
+      <input type="text" placeholder="Last name"  [(ngModel)]="filterLastName"  (input)="applyFilter()" />
+      <select [(ngModel)]="filterRole" (change)="applyFilter()">
+        <option value="">All roles</option>
+        <option value="isAdmin">Admin</option>
+        <option value="isPharmacist">Pharmacist</option>
+        <option value="isCustomer">Customer</option>
+      </select>
+      <button class="btn-reset" (click)="resetFilter()">Reset</button>
+    </div>
+    <small>Showing {{ users.length }} of {{ totalCount }} users</small>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+
+  <!-- TABELA -->
+  <div class="table-container" *ngIf="!isLoading">
+    <table class="user-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Admin</th>
+        <th>Pharmacist</th>
+        <th>Customer</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.firstName }}</td>
+        <td>{{ user.lastName }}</td>
+        <td>
+          <i class="{{ user.isAdmin ? 'fas fa-check-square' : 'far fa-square' }}"
+             (click)="toggleRole(user, 'isAdmin')"
+             style="cursor:pointer; font-size:20px; color:#2e7d32;" title="Admin"></i>
+        </td>
+        <td>
+          <i class="{{ user.isPharmacist ? 'fas fa-check-square' : 'far fa-square' }}"
+             (click)="toggleRole(user, 'isPharmacist')"
+             style="cursor:pointer; font-size:20px; color:#0277bd;" title="Pharmacist"></i>
+        </td>
+        <td>
+          <i class="{{ user.isCustomer ? 'fas fa-check-square' : 'far fa-square' }}"
+             (click)="toggleRole(user, 'isCustomer')"
+             style="cursor:pointer; font-size:20px; color:#f9a825;" title="Customer"></i>
+        </td>
+        <td>
+          <button class="delete-button" (click)="deleteUser(user.id)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="users.length === 0">
+        <td colspan="8" style="text-align:center;">No users found.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PAGINACIJA -->
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">←</button>
+    <button
+      *ngFor="let p of pages"
+      (click)="goToPage(p)"
+      [class.active]="p === currentPage">
+      {{ p }}
+    </button>
+    <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">→</button>
+    <span>Page {{ currentPage }} of {{ totalPages }} ({{ totalCount }} total)</span>
+  </div>
+</div>

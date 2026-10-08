@@ -1,0 +1,14 @@
+<div class="register-container">
+  <h2>Registration</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <input type="text" placeholder="Username" formControlName="username" />
+    <input type="password" placeholder="Password" formControlName="password" />
+    <input type="text" placeholder="First name" formControlName="firstName" />
+    <input type="text" placeholder="Last name" formControlName="lastName" />
+    <button type="submit">Register</button>
+
+    <div class="error-message" *ngIf="form.errors?.['registrationFailed']">
+      Registration failed
+    </div>
+  </form>
+</div>
