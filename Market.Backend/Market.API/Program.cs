@@ -52,6 +52,7 @@ public partial class Program
             builder.Services.PostConfigure<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions>(
                 Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme, options =>
                 {
+                    options.Events ??= new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents();
                     var previous = options.Events.OnMessageReceived;
                     options.Events.OnMessageReceived = async context =>
                     {
