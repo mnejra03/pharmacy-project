@@ -44,9 +44,17 @@ public static class DynamicDataSeeder
 
         var categories = await context.ProductCategories.ToDictionaryAsync(c => c.Name, c => c.Id);
         var brands = await context.Brands.ToDictionaryAsync(b => b.Name, b => b.Id);
+        var existingProducts = await context.Products.ToDictionaryAsync(p => p.Name);
         foreach (var item in catalog.Products)
         {
-            if (await context.Products.AnyAsync(p => p.Name == item.Name)) continue;
+            if (existingProducts.TryGetValue(item.Name, out var existing))
+            {
+                // Replace image links from the retired blob account while preserving
+                // any image URL that an administrator has since uploaded or changed.
+                if (existing.ImageUrl.StartsWith("https://rs1pharmacyimages.blob.core.windows.net/", StringComparison.OrdinalIgnoreCase))
+                    existing.ImageUrl = item.ImageUrl;
+                continue;
+            }
             var categoryName = catalog.Categories[item.CategoryIndex];
             var brandId = item.BrandIndex is int index && index >= 0 && index < catalog.Brands.Count ? brands[catalog.Brands[index]] : (int?)null;
             context.Products.Add(new ProductEntity
