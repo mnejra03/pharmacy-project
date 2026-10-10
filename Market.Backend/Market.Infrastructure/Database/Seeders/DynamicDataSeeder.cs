@@ -10,8 +10,13 @@ public static class DynamicDataSeeder
         var hasher = new PasswordHasher<MarketUserEntity>();
         if (!await context.Users.AnyAsync(u => u.Email == "admin@pharmacy.local"))
             context.Users.Add(new MarketUserEntity { Email = "admin@pharmacy.local", FirstName = "System", LastName = "Administrator", PasswordHash = hasher.HashPassword(null!, "Admin123!"), IsAdmin = true, IsCustomer = false, IsEnabled = true });
-        if (!await context.Users.AnyAsync(u => u.Email == "pharmacist@pharmacy.local"))
-            context.Users.Add(new MarketUserEntity { Email = "pharmacist@pharmacy.local", FirstName = "Demo", LastName = "Pharmacist", PasswordHash = hasher.HashPassword(null!, "Pharmacist123!"), IsPharmacist = true, IsCustomer = false, IsEnabled = true });
+        const string pharmacistAvatar = "https://pharmacyprojectimg2026.blob.core.windows.net/profile-images/bbffdfd7-9ad6-474c-922d-0b88701966a0.jpg";
+        var pharmacist = await context.Users.FirstOrDefaultAsync(u => u.Email == "pharmacist@pharmacy.local");
+        if (pharmacist is null)
+            context.Users.Add(new MarketUserEntity { Email = "pharmacist@pharmacy.local", FirstName = "Demo", LastName = "Pharmacist", PasswordHash = hasher.HashPassword(null!, "Pharmacist123!"), IsPharmacist = true, IsCustomer = false, IsEnabled = true, ProfileImageUrl = pharmacistAvatar });
+        else if (string.IsNullOrWhiteSpace(pharmacist.ProfileImageUrl)
+            || pharmacist.ProfileImageUrl.StartsWith("https://rs1pharmacyimages.blob.core.windows.net/", StringComparison.OrdinalIgnoreCase))
+            pharmacist.ProfileImageUrl = pharmacistAvatar;
         await context.SaveChangesAsync();
 
         await SeedCatalogAsync(context);
