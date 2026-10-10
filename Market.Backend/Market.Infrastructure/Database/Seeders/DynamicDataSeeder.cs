@@ -51,7 +51,8 @@ public static class DynamicDataSeeder
             {
                 // Replace image links from the retired blob account while preserving
                 // any image URL that an administrator has since uploaded or changed.
-                if (existing.ImageUrl.StartsWith("https://rs1pharmacyimages.blob.core.windows.net/", StringComparison.OrdinalIgnoreCase))
+                if (existing.ImageUrl.StartsWith("https://rs1pharmacyimages.blob.core.windows.net/", StringComparison.OrdinalIgnoreCase)
+                    || existing.ImageUrl.StartsWith("/images/products/", StringComparison.OrdinalIgnoreCase))
                     existing.ImageUrl = item.ImageUrl;
                 continue;
             }
