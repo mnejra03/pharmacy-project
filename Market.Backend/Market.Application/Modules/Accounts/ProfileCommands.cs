@@ -38,7 +38,7 @@ public sealed class ChangePasswordHandler(IAppDbContext db, IAppCurrentUser curr
 }
 public sealed record GetUsersQuery(int Page = 1, int PageSize = 20, string? Search = null, string? Role = null) : IRequest<PageResult<UserProfileDto>>;
 public sealed class GetUsersValidator : AbstractValidator<GetUsersQuery>
-{ public GetUsersValidator() { RuleFor(x => x.Page).GreaterThan(0); RuleFor(x => x.PageSize).InclusiveBetween(1, 100); RuleFor(x => x.Role).Must(x => x is null or "admin" or "pharmacist" or "customer"); } }
+{ public GetUsersValidator() { RuleFor(x => x.Page).GreaterThan(0); RuleFor(x => x.PageSize).InclusiveBetween(1, 100); RuleFor(x => x.Role).Must(x => string.IsNullOrWhiteSpace(x) || new[] { "admin", "pharmacist", "customer" }.Contains(x.Trim().ToLowerInvariant())); } }
 public sealed class GetUsersHandler(IAppDbContext db, IAppCurrentUser current) : IRequestHandler<GetUsersQuery, PageResult<UserProfileDto>>
 {
     public async Task<PageResult<UserProfileDto>> Handle(GetUsersQuery request, CancellationToken ct)
@@ -46,7 +46,7 @@ public sealed class GetUsersHandler(IAppDbContext db, IAppCurrentUser current) :
         if (!current.IsAdmin) throw new MarketConflictException("Samo administrator može pregledati korisnike.");
         var q = db.Users.AsNoTracking();
         if (!string.IsNullOrWhiteSpace(request.Search)) { var s = request.Search.Trim().ToLower(); q = q.Where(x => x.Email.ToLower().Contains(s) || x.FirstName.ToLower().Contains(s) || x.LastName.ToLower().Contains(s)); }
-        q = request.Role switch { "admin" => q.Where(x => x.IsAdmin), "pharmacist" => q.Where(x => x.IsPharmacist), "customer" => q.Where(x => x.IsCustomer), _ => q };
+        q = request.Role?.Trim().ToLowerInvariant() switch { "admin" => q.Where(x => x.IsAdmin), "pharmacist" => q.Where(x => x.IsPharmacist), "customer" => q.Where(x => x.IsCustomer), _ => q };
         var total = await q.CountAsync(ct); var items = await q.OrderBy(x => x.Id).Skip((request.Page - 1) * request.PageSize).Take(request.PageSize)
             .Select(x => new UserProfileDto(x.Id, x.Email, x.FirstName, x.LastName, x.PhoneNumber, x.IsAdmin, x.IsPharmacist, x.IsCustomer, x.ProfileImageUrl)).ToListAsync(ct);
         return new PageResult<UserProfileDto> { Items = items, TotalItems = total, PageSize = request.PageSize, CurrentPage = request.Page, IncludedTotal = true, TotalPages = (int)Math.Ceiling(total / (double)request.PageSize) };

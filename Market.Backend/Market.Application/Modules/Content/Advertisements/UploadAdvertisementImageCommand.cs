@@ -8,6 +8,6 @@ public sealed class UploadAdvertisementImageHandler(IAppCurrentUser user, IFileS
     public async Task<UploadedImageDto> Handle(UploadAdvertisementImageCommand request, CancellationToken ct)
     {
         if (!user.IsAdmin) throw new MarketConflictException("Samo administrator može postavljati slike oglasa.");
-        var file = await files.SaveAsync(request.Content, request.ContentType, ct); return new(file.RelativeUrl);
+        var file = await files.SaveAsync(request.Content, request.ContentType, "advertisement-images", ct); return new(file.RelativeUrl);
     }
 }

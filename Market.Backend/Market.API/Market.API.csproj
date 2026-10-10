@@ -31,4 +31,8 @@
     <ProjectReference Include="..\Market.Shared\Market.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.Local.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
 </Project>

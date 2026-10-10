@@ -24,6 +24,8 @@ public partial class Program
             //    environment variables, user-secrets (Dev), and command-line args)
             //
             var builder = WebApplication.CreateBuilder(args);
+            builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
 
             // 2) Promote Serilog to full configuration from builder.Configuration
             //    (reads "Serilog" section from appsettings + ENV overrides)

@@ -6,7 +6,7 @@ public sealed class LocalFileStorage(IWebHostEnvironment environment) : IFileSto
     { ["image/jpeg"] = ".jpg", ["image/png"] = ".png", ["image/webp"] = ".webp", ["image/gif"] = ".gif" };
     private string Root => Path.Combine(environment.ContentRootPath, "wwwroot", "uploads");
 
-    public async Task<StoredFile> SaveAsync(byte[] content, string contentType, CancellationToken ct)
+    public async Task<StoredFile> SaveAsync(byte[] content, string contentType, string containerName, CancellationToken ct)
     {
         if (!Extensions.TryGetValue(contentType, out var extension)) throw new InvalidOperationException("Format slike nije podržan.");
         var key = $"{Guid.NewGuid():N}{extension}";

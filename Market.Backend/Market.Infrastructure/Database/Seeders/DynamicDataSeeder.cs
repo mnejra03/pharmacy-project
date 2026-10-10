@@ -17,6 +17,8 @@ public static class DynamicDataSeeder
         else if (string.IsNullOrWhiteSpace(pharmacist.ProfileImageUrl)
             || pharmacist.ProfileImageUrl.StartsWith("https://rs1pharmacyimages.blob.core.windows.net/", StringComparison.OrdinalIgnoreCase))
             pharmacist.ProfileImageUrl = pharmacistAvatar;
+        if (!await context.Users.AnyAsync(u => u.Email == "customer@pharmacy.local"))
+            context.Users.Add(new MarketUserEntity { Email = "customer@pharmacy.local", FirstName = "Demo", LastName = "Customer", PasswordHash = hasher.HashPassword(null!, "Customer123!"), IsCustomer = true, IsEnabled = true });
         await context.SaveChangesAsync();
 
         await SeedCatalogAsync(context);
@@ -46,6 +48,51 @@ public static class DynamicDataSeeder
             else
                 existingAd.Title = title;
         }
+        await context.SaveChangesAsync();
+        await SeedDemoOrdersAsync(context);
+    }
+
+    private static async Task SeedDemoOrdersAsync(DatabaseContext context)
+    {
+        // Keep the legacy project's four sample orders available in local development.
+        // Never add sample orders on top of orders that already exist.
+        if (await context.Orders.AnyAsync()) return;
+
+        var admin = await context.Users.FirstOrDefaultAsync(u => u.Email == "admin@pharmacy.local");
+        var customer = await context.Users.FirstOrDefaultAsync(u => u.Email == "customer@pharmacy.local");
+        var products = await context.Products.OrderBy(p => p.Id).Take(4).ToListAsync();
+        if (admin is null || customer is null || products.Count < 3) return;
+
+        var now = DateTime.UtcNow;
+        var demoOrders = new[]
+        {
+            (User: customer, Status: "Pending", Payment: "Kartica (demo)", Address: "Sarajevo, BiH", DaysAgo: 5, Lines: new[] { (Product: products[0], Quantity: 2), (Product: products[1], Quantity: 1) }),
+            (User: customer, Status: "Shipped", Payment: "Pouzećem", Address: "Mostar, BiH", DaysAgo: 2, Lines: new[] { (Product: products[2], Quantity: 3) }),
+            (User: admin, Status: "Completed", Payment: "Kartica (demo)", Address: "Zenica, BiH", DaysAgo: 1, Lines: new[] { (Product: products[3], Quantity: 2) }),
+            (User: admin, Status: "Completed", Payment: "Kartica (demo)", Address: "Sarajevo, BiH", DaysAgo: 0, Lines: new[] { (Product: products[2], Quantity: 1), (Product: products[1], Quantity: 2) })
+        };
+
+        foreach (var seed in demoOrders)
+        {
+            var items = seed.Lines.Select(line => new OrderItemEntity
+            {
+                ProductId = line.Product.Id,
+                ProductName = line.Product.Name,
+                Quantity = line.Quantity,
+                UnitPrice = line.Product.Price
+            }).ToList();
+            context.Orders.Add(new OrderEntity
+            {
+                UserId = seed.User.Id,
+                OrderedAtUtc = now.AddDays(-seed.DaysAgo),
+                Status = seed.Status,
+                TotalPrice = items.Sum(item => item.UnitPrice * item.Quantity),
+                PaymentMethod = seed.Payment,
+                ShippingAddress = seed.Address,
+                Items = items
+            });
+        }
+
         await context.SaveChangesAsync();
     }
 

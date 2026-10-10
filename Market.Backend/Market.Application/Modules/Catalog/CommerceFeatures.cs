@@ -12,7 +12,7 @@ public sealed record CheckoutCommand(string ShippingAddress, string PaymentMetho
 public sealed record CreateCartPaymentIntentCommand : IRequest<CartPaymentIntentDto>;
 public sealed record CartPaymentIntentDto(string PaymentIntentId, string ClientSecret, string PublishableKey, decimal Amount, string Currency);
 public sealed record OrderItemDto(int ProductId, string Name, int Quantity, decimal UnitPrice);
-public sealed record OrderDto(int Id, DateTime OrderedAtUtc, string Status, decimal TotalPrice, string PaymentMethod, string ShippingAddress, IReadOnlyList<OrderItemDto> Items);
+public sealed record OrderDto(int Id, DateTime OrderedAtUtc, string Status, decimal TotalPrice, string PaymentMethod, string ShippingAddress, string CustomerName, string CustomerEmail, IReadOnlyList<OrderItemDto> Items);
 public sealed record GetOrdersQuery(bool All = false) : IRequest<IReadOnlyList<OrderDto>>;
 public sealed record UpdateOrderStatusCommand(int Id, string Status) : IRequest;
 
@@ -127,6 +127,8 @@ public sealed class CheckoutHandler(IAppDbContext db, IAppCurrentUser user, IStr
             if (payment is null || payment.Status != "succeeded" || payment.UserId != user.UserId!.Value.ToString() || payment.Currency != "bam" || payment.AmountMinor != expectedMinor)
                 throw new MarketConflictException("Stripe ne potvrđuje uspješno plaćanje za ovu korpu.");
         }
+        var customer = await db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.UserId, ct)
+            ?? throw new MarketNotFoundException("Korisnik nije pronađen.");
         var order = new OrderEntity { UserId = user.UserId!.Value, OrderedAtUtc = DateTime.UtcNow, Status = "Pending", PaymentMethod = request.PaymentMethod, PaymentReference = request.PaymentReference, ShippingAddress = request.ShippingAddress.Trim() };
         foreach (var item in items)
         {
@@ -136,7 +138,7 @@ public sealed class CheckoutHandler(IAppDbContext db, IAppCurrentUser user, IStr
         }
         db.Orders.Add(order); cart.IsCompleted = true;
         await db.SaveChangesAsync(ct);
-        return new(order.Id, order.OrderedAtUtc, order.Status, order.TotalPrice, order.PaymentMethod, order.ShippingAddress, order.Items.Select(i => new OrderItemDto(i.ProductId, i.ProductName, i.Quantity, i.UnitPrice)).ToList());
+        return new(order.Id, order.OrderedAtUtc, order.Status, order.TotalPrice, order.PaymentMethod, order.ShippingAddress, $"{customer.FirstName} {customer.LastName}".Trim(), customer.Email, order.Items.Select(i => new OrderItemDto(i.ProductId, i.ProductName, i.Quantity, i.UnitPrice)).ToList());
     }
 }
 
@@ -146,10 +148,10 @@ public sealed class GetOrdersHandler(IAppDbContext db, IAppCurrentUser user) : I
     {
         if (user.UserId is null) throw new MarketConflictException("Prijava je obavezna.");
         if (request.All && !user.IsAdmin && !user.IsPharmacist) throw new MarketConflictException("Nemate pravo pregledati sve narudžbe.");
-        var query = db.Orders.AsNoTracking().Include(o => o.Items).AsQueryable();
+        var query = db.Orders.AsNoTracking().Include(o => o.Items).Include(o => o.User).AsQueryable();
         if (!request.All) query = query.Where(o => o.UserId == user.UserId);
         var orders = await query.OrderByDescending(o => o.OrderedAtUtc).ToListAsync(ct);
-        return orders.Select(o => new OrderDto(o.Id, o.OrderedAtUtc, o.Status, o.TotalPrice, o.PaymentMethod, o.ShippingAddress, o.Items.Select(i => new OrderItemDto(i.ProductId, i.ProductName, i.Quantity, i.UnitPrice)).ToList())).ToList();
+        return orders.Select(o => new OrderDto(o.Id, o.OrderedAtUtc, o.Status, o.TotalPrice, o.PaymentMethod, o.ShippingAddress, $"{o.User?.FirstName} {o.User?.LastName}".Trim(), o.User?.Email ?? string.Empty, o.Items.Select(i => new OrderItemDto(i.ProductId, i.ProductName, i.Quantity, i.UnitPrice)).ToList())).ToList();
     }
 }
 

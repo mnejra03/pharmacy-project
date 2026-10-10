@@ -7,9 +7,10 @@ import { UsersComponent } from './users/users.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdvertisementsComponent } from './advertisements/advertisements.component';
 import { AdminProductsComponent } from './products/products.component';
+import { AdminOrdersComponent } from './orders/admin-orders.component';
 
 @NgModule({
-  declarations: [AdminLayoutComponent, AdminSettingsComponent, UsersComponent, DashboardComponent, AdvertisementsComponent, AdminProductsComponent],
+  declarations: [AdminLayoutComponent, AdminSettingsComponent, UsersComponent, DashboardComponent, AdvertisementsComponent, AdminProductsComponent, AdminOrdersComponent],
   imports: [AdminRoutingModule, SharedModule]
 })
 export class AdminModule {}

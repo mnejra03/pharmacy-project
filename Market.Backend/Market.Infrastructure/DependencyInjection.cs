@@ -53,7 +53,16 @@ public static class DependencyInjection
         services.AddScoped<IAppCurrentUser, AppCurrentUser>();
         services.AddSignalR();
         services.AddScoped<IChatNotifier, SignalRChatNotifier>();
-        services.AddScoped<IFileStorage, LocalFileStorage>();
+        var blobConnectionString = configuration.GetConnectionString("AzureBlobStorage");
+        if (!string.IsNullOrWhiteSpace(blobConnectionString))
+        {
+            services.AddSingleton(new Azure.Storage.Blobs.BlobServiceClient(blobConnectionString));
+            services.AddScoped<IFileStorage, AzureBlobFileStorage>();
+        }
+        else
+        {
+            services.AddScoped<IFileStorage, LocalFileStorage>();
+        }
         services.AddHttpClient<IStripePaymentGateway, StripePaymentGateway>();
 
         // TimeProvider (if used in handlers/services)

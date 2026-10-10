@@ -9,7 +9,7 @@ export interface ProductBrand { id:number; name:string; logoUrl?:string; descrip
 export interface CartItem { id:number; productId:number; name:string; imageUrl:string; quantity:number; unitPrice:number; lineTotal:number; savedForLater:boolean; stock:number; }
 export interface Cart { items:CartItem[]; total:number; itemCount:number; }
 export interface OrderItem { productId:number; name:string; quantity:number; unitPrice:number; }
-export interface PharmacyOrder { id:number; orderedAtUtc:string; status:string; totalPrice:number; paymentMethod:string; shippingAddress:string; items:OrderItem[]; }
+export interface PharmacyOrder { id:number; orderedAtUtc:string; status:string; totalPrice:number; paymentMethod:string; shippingAddress:string; customerName:string; customerEmail:string; items:OrderItem[]; }
 export interface CartPaymentIntent { paymentIntentId:string; clientSecret:string; publishableKey:string; amount:number; currency:string; }
 export interface ProductReview { id:number; userName:string; rating:number; text:string; createdAtUtc:string; }
 export interface SaveProduct { name:string; description:string; price:number; quantityInStock:number; imageUrl:string; categoryId:number; brandId?:number; isDiscounted:boolean; discountPercentage?:number; expiryDate?:string; }

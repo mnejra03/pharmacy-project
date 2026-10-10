@@ -16,7 +16,8 @@ import { UsersApiService, UserProfile } from '../../../api-services/users/users-
       <ng-container matColumnDef="role"><th mat-header-cell *matHeaderCellDef>Uloga</th><td mat-cell *matCellDef="let u">{{u.isAdmin?'Administrator':u.isPharmacist?'Farmaceut':'Kupac'}}</td></ng-container>
       <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef>Akcije</th><td mat-cell *matCellDef="let u"><button mat-button (click)="edit(u)">Uredi</button><button mat-button color="warn" (click)="remove(u.id)">Ukloni</button></td></ng-container>
       <tr mat-header-row *matHeaderRowDef="columns"></tr><tr mat-row *matRowDef="let row;columns:columns"></tr>
-    </table><p>Ukupno: {{totalItems}}</p>
+      <tr class="mat-row" *matNoDataRow><td class="mat-cell" [attr.colspan]="columns.length">{{loading?'Učitavam korisnike…':'Nema korisnika za odabrane filtere.'}}</td></tr>
+    </table><p *ngIf="errorMessage" class="error-message">{{errorMessage}} <button mat-button type="button" (click)="load()">Pokušaj ponovo</button></p><p>Ukupno: {{totalItems}}</p>
     <form *ngIf="selected" [formGroup]="editForm" (ngSubmit)="save()"><h2>Uredi {{selected.email}}</h2>
       <mat-form-field><mat-label>Ime</mat-label><input matInput formControlName="firstName"></mat-form-field><mat-form-field><mat-label>Prezime</mat-label><input matInput formControlName="lastName"></mat-form-field><mat-form-field><mat-label>Telefon</mat-label><input matInput formControlName="phoneNumber"></mat-form-field>
       <mat-checkbox formControlName="isAdmin">Administrator</mat-checkbox><mat-checkbox formControlName="isPharmacist">Farmaceut</mat-checkbox><mat-checkbox formControlName="isCustomer">Kupac</mat-checkbox>
@@ -28,7 +29,7 @@ import { UsersApiService, UserProfile } from '../../../api-services/users/users-
 export class UsersComponent implements OnInit {
   private fb = inject(FormBuilder); private api = inject(UsersApiService);
   filters = this.fb.group({ search: [''], role: [''] }); editForm=this.fb.group({firstName:[''],lastName:[''],phoneNumber:[''],isAdmin:[false],isPharmacist:[false],isCustomer:[false]}); items: UserProfile[] = []; selected?:UserProfile;
-  columns = ['name', 'email', 'role','actions']; page = 1; pageSize = 20; totalItems = 0; totalPages = 1;
+  columns = ['name', 'email', 'role','actions']; page = 1; pageSize = 20; totalItems = 0; totalPages = 1; loading=false; errorMessage='';
   ngOnInit(): void { this.load(); }
   search(): void { this.page = 1; this.load(); }
   previous(): void { if (this.page > 1) { this.page--; this.load(); } }
@@ -36,8 +37,9 @@ export class UsersComponent implements OnInit {
   edit(user:UserProfile):void {this.selected=user;this.editForm.patchValue(user);}
   save():void {if(!this.selected)return;const v=this.editForm.value;if(!v.isAdmin&&!v.isPharmacist&&!v.isCustomer)return;this.api.updateUser(this.selected.id,{firstName:v.firstName??'',lastName:v.lastName??'',phoneNumber:v.phoneNumber??undefined,isAdmin:!!v.isAdmin,isPharmacist:!!v.isPharmacist,isCustomer:!!v.isCustomer}).subscribe(()=>{this.selected=undefined;this.load();});}
   remove(id:number):void {if(confirm('Ukloniti ovog korisnika?'))this.api.deleteUser(id).subscribe(()=>this.load());}
-  private load(): void {
+  load(): void {
+    this.loading=true; this.errorMessage='';
     this.api.getUsers({ page: this.page, pageSize: this.pageSize, search: this.filters.value.search || undefined, role: this.filters.value.role || undefined })
-      .subscribe(result => { this.items = result.items; this.totalItems = result.totalItems; this.totalPages = Math.max(1, result.totalPages); });
+      .subscribe({next:result => { this.items = result.items; this.totalItems = result.totalItems; this.totalPages = Math.max(1, result.totalPages); this.loading=false; },error:error=>{this.items=[];this.totalItems=0;this.totalPages=1;this.loading=false;this.errorMessage=error?.error?.message||error?.error?.details||'Korisnike nije moguće učitati. Provjerite administratorsku prijavu i pokušajte ponovo.';}});
   }
 }

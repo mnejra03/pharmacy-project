@@ -25,8 +25,11 @@ public sealed class ProductsController(IMediator mediator, IFileStorage fileStor
         await file.CopyToAsync(stream, ct);
         try
         {
-            var stored = await fileStorage.SaveAsync(stream.ToArray(), file.ContentType, ct);
-            return Ok(new UploadedProductImageDto($"{Request.Scheme}://{Request.Host}{stored.RelativeUrl}"));
+            var stored = await fileStorage.SaveAsync(stream.ToArray(), file.ContentType, "product-images", ct);
+            var imageUrl = Uri.TryCreate(stored.RelativeUrl, UriKind.Absolute, out var absolute)
+                ? absolute.ToString()
+                : $"{Request.Scheme}://{Request.Host}{stored.RelativeUrl}";
+            return Ok(new UploadedProductImageDto(imageUrl));
         }
         catch (InvalidOperationException ex) { return BadRequest(ex.Message); }
     }

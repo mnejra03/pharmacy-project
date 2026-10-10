@@ -11,7 +11,11 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
         if (file is null || file.Length == 0 || file.Length > 5 * 1024 * 1024) return BadRequest("Slika mora imati između 1 bajt i 5 MB.");
         await using var stream = new MemoryStream(); await file.CopyToAsync(stream, ct);
         var result = await mediator.Send(new UpdateProfileImageCommand(file.ContentType, stream.ToArray()), ct);
-        return Ok(result with { ProfileImageUrl = result.ProfileImageUrl is null ? null : $"{Request.Scheme}://{Request.Host}{result.ProfileImageUrl}" });
+        var imageUrl = result.ProfileImageUrl is null ? null
+            : Uri.TryCreate(result.ProfileImageUrl, UriKind.Absolute, out var absolute)
+                ? absolute.ToString()
+                : $"{Request.Scheme}://{Request.Host}{result.ProfileImageUrl}";
+        return Ok(result with { ProfileImageUrl = imageUrl });
     }
     [HttpGet] public async Task<ActionResult<PageResult<UserProfileDto>>> Get([FromQuery] GetUsersQuery query, CancellationToken ct) => Ok(await mediator.Send(query, ct));
     [HttpPut("{id:int}")] public async Task<ActionResult<UserProfileDto>> Update(int id, [FromBody] UpdateUserCommand command, CancellationToken ct) => Ok(await mediator.Send(command with { Id = id }, ct));

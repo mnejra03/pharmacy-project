@@ -7,7 +7,7 @@ public sealed class UpdateProfileImageHandler(IAppDbContext db, IAppCurrentUser 
     public async Task<UserProfileDto> Handle(UpdateProfileImageCommand request, CancellationToken ct)
     {
         var account = await db.Users.FirstOrDefaultAsync(x => x.Id == user.UserId, ct) ?? throw new MarketNotFoundException("Korisnik nije pronađen.");
-        var file = await files.SaveAsync(request.Content, request.ContentType, ct); account.ProfileImageUrl = file.RelativeUrl;
+        var file = await files.SaveAsync(request.Content, request.ContentType, "profile-images", ct); account.ProfileImageUrl = file.RelativeUrl;
         await db.SaveChangesAsync(ct); return new(account.Id, account.Email, account.FirstName, account.LastName, account.PhoneNumber, account.IsAdmin, account.IsPharmacist, account.IsCustomer, account.ProfileImageUrl);
     }
 }
