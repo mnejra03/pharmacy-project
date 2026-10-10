@@ -29,7 +29,7 @@ import { ToasterService } from '../../../core/services/toaster.service';
   .catalog-heading h1 { margin-bottom:.25rem; } .catalog-heading p { margin:0; }
   .catalog-filters { display:grid; grid-template-columns:2fr 1fr 1fr auto; align-items:center; gap:1rem; padding:1rem; border:1px solid #dce6df; border-radius:12px; background:#fff; }
   .catalog-filters mat-form-field { width:100%; margin:0; } .result-count { color:#43584a; }
-  .product-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1.25rem; }
+  .product-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,260px)); justify-content:center; gap:1.25rem; }
   .product-card { display:flex; flex-direction:column; min-width:0; overflow:hidden; padding:0; border:1px solid #dce6df; border-radius:12px; background:#fff; color:#172b24; }
   .product-image { display:grid; place-items:center; height:210px; padding:1rem; background:#fff; }
   .product-image img { max-width:100%; max-height:100%; object-fit:contain; }
@@ -47,11 +47,11 @@ export class CatalogComponent implements OnInit {
   private api=inject(StoreApiService); private auth=inject(AuthFacadeService); private toaster=inject(ToasterService); private route=inject(ActivatedRoute);
   products:Product[]=[]; categories:ProductCategory[]=[]; brands:ProductBrand[]=[]; search=''; categoryId?:number; brandId?:number; discounted=false; page=1; total=0; totalPages=1;
   ngOnInit(){
-    this.api.getCategories().subscribe(x=>{this.categories=x;this.applyCategory(this.route.snapshot.queryParamMap.get('category'));});
-    this.api.getBrands().subscribe(x=>this.brands=x);
-    this.route.queryParamMap.subscribe(params=>this.applyCategory(params.get('category')));
+    this.api.getCategories().subscribe(x=>{this.categories=x;this.applyQuery(this.route.snapshot.queryParamMap.get('category'),this.route.snapshot.queryParamMap.get('brandId'));});
+    this.api.getBrands().subscribe(x=>{this.brands=x;this.applyQuery(this.route.snapshot.queryParamMap.get('category'),this.route.snapshot.queryParamMap.get('brandId'));});
+    this.route.queryParamMap.subscribe(params=>this.applyQuery(params.get('category'),params.get('brandId')));
   }
-  private applyCategory(name:string|null){const id=name?this.categories.find(c=>c.name===name)?.id:undefined;if(id!==this.categoryId){this.categoryId=id;this.load();}else if(!this.products.length){this.load();}}
+  private applyQuery(categoryName:string|null,brandValue:string|null){const categoryId=categoryName?this.categories.find(c=>c.name===categoryName)?.id:undefined;const brandId=brandValue?Number(brandValue):undefined;if(categoryId!==this.categoryId||brandId!==this.brandId){this.categoryId=categoryId;this.brandId=brandId;this.load();}else if(!this.products.length){this.load();}}
   load(){this.page=1;this.fetch();}
   fetch(){this.api.getProducts({search:this.search||undefined,categoryId:this.categoryId,brandId:this.brandId,discounted:this.discounted||undefined,page:this.page,pageSize:12}).subscribe(x=>{this.products=x.items;this.total=x.totalItems;this.totalPages=Math.max(1,x.totalPages);});}
   changePage(delta:number){this.page+=delta;this.fetch();window.scrollTo({top:0,behavior:'smooth'});}
