@@ -516,3 +516,38 @@ label{
   margin-top: 10px;
   border-radius: 5px;
 }
+
+/* Clear contrast and larger tap targets for the account actions in the main nav. */
+.navigation { justify-content: space-between; gap: 1rem; min-height: 68px; padding: 10px clamp(12px, 2vw, 28px); }
+.navigation ul { flex-wrap: wrap; align-items: center; gap: 6px; }
+.navigation li { margin: 0; }
+.navigation ul li a { display: inline-flex; align-items: center; min-height: 42px; margin: 0; padding: 9px 12px; border-radius: 8px; color: #fff; font-weight: 600; }
+.navigation a:hover, .navigation a.active { color: #fff; background: #2e7d32; border-bottom: 0; }
+.logout-container { position: static; width: auto; display: flex; flex: 0 0 auto; align-items: center; gap: 9px; }
+.logout-container .account-link, .logout-container .logout-button { display: inline-flex; width: auto; min-height: 42px; align-items: center; justify-content: center; gap: 7px; margin: 0; padding: 9px 14px; border: 1px solid transparent; border-radius: 9px; font-size: 14px; font-weight: 700; text-decoration: none; transition: transform .15s ease, background-color .15s ease; }
+.logout-container .account-link { color: #123b20; background: #fff; box-shadow: 0 2px 8px #092b1825; }
+.logout-container .logout-button { color: #fff; background: #b42318; border-color: #fda29b; }
+.logout-container .account-link:hover, .logout-container .logout-button:hover { transform: translateY(-1px); }
+.logout-container .logout-button:hover { background: #912018; }
+.header-icons { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; align-items: center; }
+.header-icons a { color: #17492a; }
+@media (max-width: 900px) {
+  .navigation { align-items: flex-start; flex-direction: column; }
+  .navigation ul { justify-content: center; }
+  .logout-container { align-self: flex-end; }
+}
+@media (max-width: 520px) {
+  .logout-container { align-self: stretch; justify-content: flex-end; }
+  .logout-container .account-link, .logout-container .logout-button { min-height: 40px; padding: 8px 10px; }
+}
+
+/* Keep the existing green identity and increase contrast using green shades. */
+.navigation { background: #174d2b !important; border-top: 3px solid #86c995; }
+.navigation ul li a, .navigation ul li a:visited { color: #fff !important; background: transparent; }
+.navigation ul li a:hover, .navigation ul li a.active { color: #fff !important; background: #287342 !important; }
+.navigation .logout-container .account-link { color: #174d2b !important; background: #e8f5e9 !important; border-color: #b7d9bf; }
+.navigation .logout-container .logout-button { color: #fff !important; background: #2e7d32 !important; border-color: #81c784; }
+.navigation .logout-container .logout-button:hover { background: #256b2b !important; }
+.navigation .notifications-link { gap: 8px; }
+.navigation .notification-badge { display: inline-flex; min-width: 22px; height: 22px; align-items: center; justify-content: center; padding: 0 6px; border: 2px solid #fff; border-radius: 999px; background: #dc2626; color: #fff; font-size: 12px; font-weight: 800; line-height: 1; box-shadow: 0 0 0 2px #dc262633; }
+.navigation a:focus-visible { outline: 3px solid #c8e6c9; outline-offset: 2px; }

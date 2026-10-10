@@ -23,15 +23,13 @@ public static class DependencyInjection
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        // Use an isolated in-memory store for local development and tests so the app
-        // can run without a separately installed/configured SQL Server.
+        // Keep tests isolated, but use SQL Server in Development too so local data
+        // survives API restarts just like production data.
         services.AddDbContext<DatabaseContext>((sp, options) =>
         {
-            if (env.IsTest() || env.IsDevelopment())
+            if (env.IsTest())
             {
-                var databaseName = env.IsTest() ? "IntegrationTestsDb" : "PharmacyDevelopmentDb";
-                options.UseInMemoryDatabase(databaseName);
-
+                options.UseInMemoryDatabase("IntegrationTestsDb");
                 return;
             }
 

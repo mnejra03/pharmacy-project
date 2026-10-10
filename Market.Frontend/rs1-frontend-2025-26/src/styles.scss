@@ -100,8 +100,18 @@ body {
   box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
 }
 
-.client-nav a { min-height: 2.75rem; color: #fff; font-weight: 600; }
-.client-nav a:hover { background: #2e7d32; }
+.client-nav a[mat-button] {
+  min-height: 2.75rem;
+  color: #f5fff5 !important;
+  --mdc-text-button-label-text-color: #f5fff5;
+  --mat-text-button-state-layer-color: #fff;
+  font-weight: 600;
+}
+.client-nav a[mat-button] .mdc-button__label { color: #f5fff5 !important; }
+.client-nav a[mat-button]:hover {
+  background: #287342;
+  --mdc-text-button-label-text-color: #fff;
+}
 
 @media (max-width: 600px) {
   .page { padding: 1rem; }
@@ -109,7 +119,7 @@ body {
   .page mat-form-field { flex-basis: 100%; }
   .page table[mat-table] { display: block; max-width: 100%; overflow-x: auto; }
   .client-nav { gap: 0.25rem; padding: 0.5rem; }
-  .client-nav a { padding-inline: 0.5rem; font-size: 0.85rem; }
+  .client-nav a[mat-button] { padding-inline: 0.5rem; font-size: 0.85rem; }
 }
 
 
@@ -125,7 +135,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 // ===========================
 
 .snackbar-success {
-  background-color: #4caf50 !important;
+  background-color: #087443 !important;
   color: white !important;
 
   .mat-mdc-snack-bar-label {
@@ -138,7 +148,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .snackbar-error {
-  background-color: #f44336 !important;
+  background-color: #b42318 !important;
   color: white !important;
 
   .mat-mdc-snack-bar-label {
@@ -151,7 +161,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .snackbar-warning {
-  background-color: #ff9800 !important;
+  background-color: #9a4d00 !important;
   color: white !important;
 
   .mat-mdc-snack-bar-label {
@@ -164,7 +174,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .snackbar-info {
-  background-color: #2196f3 !important;
+  background-color: #175cd3 !important;
   color: white !important;
 
   .mat-mdc-snack-bar-label {
@@ -175,3 +185,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     color: white !important;
   }
 }
+
+.status-pill { display:inline-flex; align-items:center; padding:.35rem .7rem; border-radius:999px; font-size:.8rem; font-weight:800; }
+.status-pending { background:#fff1bf; color:#7a4b00; }
+.status-processing { background:#dbeafe; color:#174ea6; }
+.status-shipped { background:#ede9fe; color:#5b21b6; }
+.status-completed { background:#d1fae5; color:#065f46; }
+.status-cancelled { background:#fee2e2; color:#991b1b; }

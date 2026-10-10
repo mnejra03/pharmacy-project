@@ -47,6 +47,7 @@
       <li><a routerLink="/catalog" [queryParams]="{ category: 'Beauty and care' }">Njega i ljepota</a></li>
       <li><a routerLink="/catalog" [queryParams]="{ category: 'Childcare' }">Djeca</a></li>
       <li><a routerLink="/catalog" [queryParams]="{ category: 'Devices' }">Uređaji</a></li>
+      <li *ngIf="auth.isAuthenticated()"><a routerLink="/client/notifications" routerLinkActive="active" class="notifications-link">Obavijesti<span *ngIf="unreadCount$ | async as unread"><span *ngIf="unread > 0" class="notification-badge" [attr.aria-label]="unread + ' nepročitanih obavijesti'">{{unread > 9 ? '9+' : unread}}</span></span></a></li>
     </ul>
     <div *ngIf="auth.isAuthenticated()" class="logout-container">
       <a routerLink="/client/profile" class="account-link">Moj profil</a>

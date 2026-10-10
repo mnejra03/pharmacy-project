@@ -8,7 +8,10 @@ namespace Market.Infrastructure.Common;
 public sealed class StripePaymentGateway(HttpClient http, IConfiguration configuration) : IStripePaymentGateway
 {
     private readonly string _secretKey = configuration["Stripe:SecretKey"] ?? string.Empty;
-    public bool IsConfigured => !string.IsNullOrWhiteSpace(_secretKey) && _secretKey.StartsWith("sk_test_", StringComparison.Ordinal);
+    public bool IsConfigured => !string.IsNullOrWhiteSpace(_secretKey)
+        && _secretKey.StartsWith("sk_test_", StringComparison.Ordinal)
+        && !string.IsNullOrWhiteSpace(PublishableKey)
+        && PublishableKey.StartsWith("pk_test_", StringComparison.Ordinal);
     public string PublishableKey => configuration["Stripe:PublishableKey"] ?? string.Empty;
 
     public async Task<PaymentIntentResult> CreateIntentAsync(long amountMinor, string currency, string userId, CancellationToken ct)

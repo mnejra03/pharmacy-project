@@ -1,5 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
+using Market.Domain.Entities.Communication;
+using Market.Domain.Entities.Content;
 
 namespace Market.Infrastructure.Database.Seeders;
 
@@ -8,17 +10,43 @@ public static class DynamicDataSeeder
     public static async Task SeedAsync(DatabaseContext context)
     {
         var hasher = new PasswordHasher<MarketUserEntity>();
-        if (!await context.Users.AnyAsync(u => u.Email == "admin@pharmacy.local"))
-            context.Users.Add(new MarketUserEntity { Email = "admin@pharmacy.local", FirstName = "System", LastName = "Administrator", PasswordHash = hasher.HashPassword(null!, "Admin123!"), IsAdmin = true, IsCustomer = false, IsEnabled = true });
+        var admin = await context.Users.FirstOrDefaultAsync(u => u.Email == "admin@pharmacy.local");
+        if (admin is null)
+        {
+            admin = new MarketUserEntity { Email = "admin@pharmacy.local", PasswordHash = hasher.HashPassword(null!, "Admin123!"), IsAdmin = true, IsCustomer = false, IsEnabled = true };
+            context.Users.Add(admin);
+        }
+        if ((admin.FirstName == "System" && admin.LastName == "Administrator") || string.IsNullOrWhiteSpace(admin.FirstName))
+        {
+            admin.FirstName = "Amra";
+            admin.LastName = "Hadžić";
+        }
         const string pharmacistAvatar = "https://pharmacyprojectimg2026.blob.core.windows.net/profile-images/bbffdfd7-9ad6-474c-922d-0b88701966a0.jpg";
         var pharmacist = await context.Users.FirstOrDefaultAsync(u => u.Email == "pharmacist@pharmacy.local");
         if (pharmacist is null)
-            context.Users.Add(new MarketUserEntity { Email = "pharmacist@pharmacy.local", FirstName = "Demo", LastName = "Pharmacist", PasswordHash = hasher.HashPassword(null!, "Pharmacist123!"), IsPharmacist = true, IsCustomer = false, IsEnabled = true, ProfileImageUrl = pharmacistAvatar });
-        else if (string.IsNullOrWhiteSpace(pharmacist.ProfileImageUrl)
+        {
+            pharmacist = new MarketUserEntity { Email = "pharmacist@pharmacy.local", PasswordHash = hasher.HashPassword(null!, "Pharmacist123!"), IsPharmacist = true, IsCustomer = false, IsEnabled = true, ProfileImageUrl = pharmacistAvatar };
+            context.Users.Add(pharmacist);
+        }
+        if ((pharmacist.FirstName == "Demo" && pharmacist.LastName == "Pharmacist") || string.IsNullOrWhiteSpace(pharmacist.FirstName))
+        {
+            pharmacist.FirstName = "Emina";
+            pharmacist.LastName = "Kovačević";
+        }
+        if (string.IsNullOrWhiteSpace(pharmacist.ProfileImageUrl)
             || pharmacist.ProfileImageUrl.StartsWith("https://rs1pharmacyimages.blob.core.windows.net/", StringComparison.OrdinalIgnoreCase))
             pharmacist.ProfileImageUrl = pharmacistAvatar;
-        if (!await context.Users.AnyAsync(u => u.Email == "customer@pharmacy.local"))
-            context.Users.Add(new MarketUserEntity { Email = "customer@pharmacy.local", FirstName = "Demo", LastName = "Customer", PasswordHash = hasher.HashPassword(null!, "Customer123!"), IsCustomer = true, IsEnabled = true });
+        var customer = await context.Users.FirstOrDefaultAsync(u => u.Email == "customer@pharmacy.local");
+        if (customer is null)
+        {
+            customer = new MarketUserEntity { Email = "customer@pharmacy.local", PasswordHash = hasher.HashPassword(null!, "Customer123!"), IsCustomer = true, IsEnabled = true };
+            context.Users.Add(customer);
+        }
+        if ((customer.FirstName == "Demo" && customer.LastName == "Customer") || string.IsNullOrWhiteSpace(customer.FirstName))
+        {
+            customer.FirstName = "Lejla";
+            customer.LastName = "Delić";
+        }
         await context.SaveChangesAsync();
 
         await SeedCatalogAsync(context);
@@ -50,6 +78,61 @@ public static class DynamicDataSeeder
         }
         await context.SaveChangesAsync();
         await SeedDemoOrdersAsync(context);
+        await SeedDemoActivityAsync(context);
+    }
+
+    private static async Task SeedDemoActivityAsync(DatabaseContext context)
+    {
+        var customer = await context.Users.FirstOrDefaultAsync(u => u.Email == "customer@pharmacy.local");
+        var pharmacist = await context.Users.FirstOrDefaultAsync(u => u.Email == "pharmacist@pharmacy.local");
+        var products = await context.Products.OrderBy(p => p.Id).Take(4).ToListAsync();
+        if (customer is null || pharmacist is null || products.Count < 2) return;
+
+        if (!await context.Carts.AnyAsync(c => c.UserId == customer.Id && !c.IsCompleted))
+        {
+            var cart = new CartEntity { UserId = customer.Id };
+            cart.Items.Add(new CartItemEntity { ProductId = products[0].Id, Quantity = 1 });
+            context.Carts.Add(cart);
+        }
+
+        if (!await context.Wishlists.AnyAsync(w => w.UserId == customer.Id))
+        {
+            var wishlist = new WishlistEntity { UserId = customer.Id };
+            wishlist.Items.Add(new WishlistItemEntity { ProductId = products[1].Id });
+            if (products.Count > 2) wishlist.Items.Add(new WishlistItemEntity { ProductId = products[2].Id });
+            context.Wishlists.Add(wishlist);
+        }
+
+        foreach (var (product, rating, text) in new[]
+        {
+            (products[0], 5, "Odličan demo proizvod, brzo se uklopio u svakodnevnu rutinu."),
+            (products[1], 4, "Primjer recenzije: kvalitetan proizvod i jednostavna narudžba.")
+        })
+        {
+            if (!await context.ProductReviews.AnyAsync(r => r.ProductId == product.Id && r.UserId == customer.Id))
+                context.ProductReviews.Add(new ProductReviewEntity { ProductId = product.Id, UserId = customer.Id, Rating = rating, Text = text });
+        }
+
+        if (!await context.Notifications.AnyAsync(n => n.UserId == customer.Id))
+            context.Notifications.AddRange(
+                new NotificationEntity { UserId = customer.Id, Title = "Dobro došli, Lejla!", Message = "Ovdje ćete vidjeti obavijesti o receptima, narudžbama i novostima apoteke.", Type = "info", CreatedAt = DateTime.UtcNow.AddMinutes(-20), IsRead = false },
+                new NotificationEntity { UserId = customer.Id, Title = "Narudžba je u pripremi", Message = "Primjer obavijesti o statusu narudžbe. Status možete pratiti na stranici Narudžbe.", Type = "order", CreatedAt = DateTime.UtcNow.AddDays(-1), IsRead = true });
+        if (!await context.Notifications.AnyAsync(n => n.UserId == pharmacist.Id))
+            context.Notifications.Add(new NotificationEntity { UserId = pharmacist.Id, Title = "Novi recept za pregled", Message = "Lejla Delić poslala je demo recept. Otvorite stranicu Recepti za pregled.", Type = "recipe", CreatedAt = DateTime.UtcNow.AddMinutes(-10), IsRead = false });
+        var admin = await context.Users.FirstOrDefaultAsync(u => u.Email == "admin@pharmacy.local");
+        if (admin is not null && !await context.Notifications.AnyAsync(n => n.UserId == admin.Id))
+            context.Notifications.Add(new NotificationEntity { UserId = admin.Id, Title = "Dobro došli, Amra!", Message = "Demo podaci su spremni: katalog, korisnici, narudžbe i aktivnosti apoteke.", Type = "info", CreatedAt = DateTime.UtcNow.AddMinutes(-15), IsRead = false });
+
+        if (!await context.Recipes.AnyAsync(r => r.UserId == customer.Id))
+            context.Recipes.Add(new RecipeEntity { UserId = customer.Id, DateOfIssue = DateTime.UtcNow.AddDays(-1), DoctorFirstName = "Demo", DoctorLastName = "Primjer", Status = "Pending" });
+
+        if (!await context.ChatMessages.AnyAsync())
+        {
+            context.ChatMessages.Add(new ChatMessageEntity { SenderId = customer.Id, ReceiverId = pharmacist.Id, Message = "Pozdrav, možete li mi pomoći pronaći odgovarajući proizvod? (demo razgovor)", Type = "question", Status = "new", SentAtUtc = DateTime.UtcNow.AddMinutes(-5) });
+            context.ChatMessages.Add(new ChatMessageEntity { SenderId = pharmacist.Id, ReceiverId = customer.Id, Message = "Naravno, rado ćemo pomoći. Ova poruka služi kao primjer razgovora.", Type = "answer", Status = "answered", IsResponse = true, SentAtUtc = DateTime.UtcNow.AddMinutes(-3) });
+        }
+
+        await context.SaveChangesAsync();
     }
 
     private static async Task SeedDemoOrdersAsync(DatabaseContext context)
