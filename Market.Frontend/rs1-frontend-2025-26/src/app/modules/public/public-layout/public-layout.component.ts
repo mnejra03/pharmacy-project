@@ -1,13 +1,49 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Advertisement, AdvertisementsApiService } from '../../../api-services/advertisements/advertisements-api.service';
+import { Router } from '@angular/router';
+import { Product, StoreApiService } from '../../../api-services/store/store-api.service';
+import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
 
-@Component({ selector: 'app-public-layout', standalone: false, templateUrl: './public-layout.component.html', styleUrl: './public-layout.component.scss' })
+@Component({
+  selector: 'app-public-layout',
+  standalone: false,
+  templateUrl: './public-layout.component.html',
+  styleUrl: './public-layout.component.scss'
+})
 export class PublicLayoutComponent implements OnInit {
-  private advertisementsApi = inject(AdvertisementsApiService);
-  advertisements: Advertisement[] = [];
-  activeIndex = 0;
-  currentYear = new Date().getFullYear();
-  ngOnInit(): void { this.advertisementsApi.getAll().subscribe({ next: items => this.advertisements = items, error: () => this.advertisements = [] }); }
-  previous(): void { if (this.advertisements.length) this.activeIndex = (this.activeIndex - 1 + this.advertisements.length) % this.advertisements.length; }
-  next(): void { if (this.advertisements.length) this.activeIndex = (this.activeIndex + 1) % this.advertisements.length; }
+  readonly auth = inject(AuthFacadeService);
+  private readonly store = inject(StoreApiService);
+  private readonly router = inject(Router);
+
+  readonly currentYear = new Date().getFullYear();
+  searchQuery = '';
+  searchResults: Product[] = [];
+  cartCount = 0;
+
+  ngOnInit(): void {
+    if (this.auth.isAuthenticated()) {
+      this.store.getCart().subscribe({ next: cart => this.cartCount = cart.itemCount, error: () => this.cartCount = 0 });
+    }
+  }
+
+  isCustomerLoggedIn(): boolean {
+    return this.auth.isAuthenticated() && this.auth.isCustomer();
+  }
+
+  onSearch(): void {
+    const query = this.searchQuery.trim();
+    if (!query) {
+      this.searchResults = [];
+      return;
+    }
+    this.store.getProducts({ search: query, page: 1, pageSize: 8 }).subscribe({
+      next: page => this.searchResults = page.items,
+      error: () => this.searchResults = []
+    });
+  }
+
+  goToProduct(productId: number): void {
+    void this.router.navigate(['/product', productId]);
+    this.searchQuery = '';
+    this.searchResults = [];
+  }
 }

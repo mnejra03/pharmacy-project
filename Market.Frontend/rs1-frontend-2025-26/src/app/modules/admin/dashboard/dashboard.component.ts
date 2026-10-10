@@ -4,42 +4,25 @@ import { DashboardApiService, DashboardStats } from '../../../api-services/dashb
 @Component({
   selector: 'app-dashboard',
   standalone: false,
-  template: `
-    <section class="page" aria-labelledby="dashboard-title">
-      <h1 id="dashboard-title">Pregled apoteke</h1>
-      <div class="stats" *ngIf="stats">
-        <mat-card>
-          <mat-card-title>Korisnici</mat-card-title>
-          <mat-card-content>{{ stats.users }}</mat-card-content>
-        </mat-card>
-        <mat-card>
-          <mat-card-title>Farmaceuti</mat-card-title>
-          <mat-card-content>{{ stats.pharmacists }}</mat-card-content>
-        </mat-card>
-        <mat-card>
-          <mat-card-title>Recepti</mat-card-title>
-          <mat-card-content>{{ stats.recipes }}</mat-card-content>
-        </mat-card>
-        <mat-card>
-          <mat-card-title>Recepti na čekanju</mat-card-title>
-          <mat-card-content>{{ stats.pendingRecipes }}</mat-card-content>
-        </mat-card>
-        <mat-card>
-          <mat-card-title>Nepročitane obavijesti</mat-card-title>
-          <mat-card-content>{{ stats.unreadNotifications }}</mat-card-content>
-        </mat-card>
-      </div>
-    </section>
-  `,
+  template: `<section class="page dashboard-page" aria-labelledby="dashboard-title">
+    <h1 id="dashboard-title">Pregled apoteke</h1>
+    <div class="dashboard-cards" *ngIf="stats">
+      <article class="card"><h2>Korisnici</h2><p>{{ stats.users }}</p></article>
+      <article class="card"><h2>Farmaceuti</h2><p>{{ stats.pharmacists }}</p></article>
+      <article class="card"><h2>Recepti</h2><p>{{ stats.recipes }}</p></article>
+      <article class="card"><h2>Recepti na čekanju</h2><p>{{ stats.pendingRecipes }}</p></article>
+      <article class="card"><h2>Nepročitane obavijesti</h2><p>{{ stats.unreadNotifications }}</p></article>
+    </div>
+  </section>`,
   styles: [`
-    :host { display: block; min-height: 100%; color: #172b24; }
-    .page { box-sizing: border-box; width: 100%; min-height: 100vh; padding: clamp(1.5rem, 4vw, 3rem); background: #f4f7f5; }
-    h1 { margin: 0 0 1.75rem; color: #173e27; font-size: clamp(1.75rem, 3vw, 2.25rem); line-height: 1.25; font-weight: 700; }
-    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 1.25rem; }
-    mat-card { min-height: 150px; box-sizing: border-box; padding: 1.5rem; border: 1px solid #dce6df; border-radius: 12px; background: #fff; color: #172b24; box-shadow: 0 4px 14px rgb(22 55 34 / 8%); }
-    mat-card-title { display: block; color: #34483b; font-size: 1rem; font-weight: 600; line-height: 1.5; }
-    mat-card-content { margin-top: 1rem; color: #176b36; font-size: 2.5rem; font-weight: 700; line-height: 1.1; }
-    @media (max-width: 600px) { .page { padding: 1.25rem; } .stats { grid-template-columns: 1fr; gap: 0.875rem; } mat-card { min-height: auto; padding: 1.25rem; } }
+    :host { display:block; color:#333; font-family:Poppins,Arial,sans-serif; }
+    .dashboard-page { min-height:80vh; padding:1.5rem 2rem; }
+    h1 { margin:0 0 1rem; color:#1b5e20; font-size:1.7rem; }
+    .dashboard-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.5rem; padding:1rem 0; }
+    .card { min-height:125px; padding:1.5rem; border-radius:10px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.08); text-align:center; }
+    .card h2 { margin:0 0 .75rem; color:#59605a; font-size:1rem; font-weight:600; }
+    .card p { margin:0; color:#1b5e20; font-size:2rem; font-weight:700; }
+    @media(max-width:600px){.dashboard-page{padding:1rem}.dashboard-cards{grid-template-columns:1fr;gap:.875rem}}
   `],
 })
 export class DashboardComponent implements OnInit {

@@ -1,13 +1,13 @@
 // Teget paleta
-$primary-color: #4976b5;
-$primary-light: #6b96d1;
-$primary-lighter: #e8f0f9;
-$primary-dark: #3a5e91;
+$primary-color: #2e7d32;
+$primary-light: #66bb6a;
+$primary-lighter: #e8f5e9;
+$primary-dark: #1b5e20;
 
 $text-primary: #2c3e50;
 $text-secondary: #546e7a;
-$border-color: rgba(73, 118, 181, 0.15);
-$hover-bg: rgba(73, 118, 181, 0.08);
+$border-color: rgba(46, 125, 50, 0.15);
+$hover-bg: rgba(46, 125, 50, 0.08);
 
 .paginator-bar {
   padding: 0;
@@ -53,7 +53,7 @@ $hover-bg: rgba(73, 118, 181, 0.08);
     }
 
     .info-divider {
-      color: rgba(73, 118, 181, 0.3);
+      color: rgba(46, 125, 50, 0.3);
       font-weight: bold;
     }
   }
@@ -162,7 +162,7 @@ $hover-bg: rgba(73, 118, 181, 0.08);
           background: $primary-lighter;
           border-color: $primary-color;
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(73, 118, 181, 0.2);
+          box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
         }
 
         &:not(:disabled):active {
@@ -189,7 +189,7 @@ $hover-bg: rgba(73, 118, 181, 0.08);
         font-weight: 700;
         font-size: 16px;
         border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(73, 118, 181, 0.3);
+        box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
         padding: 0 12px;
       }
     }

@@ -1,10 +1,10 @@
 // src/app/modules/shared/components/fit-confirm-dialog/fit-fit-confirm-dialog.component.scss
 
-// Glavne boje - teget paleta #4976b5
-$primary-color: #4976b5;
-$primary-light: #6b96d1;
-$primary-lighter: #e8f0f9;
-$primary-dark: #3a5e91;
+// Apoteka green palette
+$primary-color: #2e7d32;
+$primary-light: #66bb6a;
+$primary-lighter: #e8f5e9;
+$primary-dark: #1b5e20;
 
 $success-color: #66bb6a;
 $error-color: #ef5350;
@@ -13,7 +13,7 @@ $info-color: #42a5f5;
 
 $text-primary: #2c3e50;
 $text-secondary: #546e7a;
-$border-color: rgba(73, 118, 181, 0.15);
+$border-color: rgba(46, 125, 50, 0.15);
 
 .confirm-dialog {
   padding: 8px;
@@ -110,11 +110,11 @@ $border-color: rgba(73, 118, 181, 0.15);
 
       // Raised buttons
       &[mat-raised-button] {
-        box-shadow: 0 4px 12px rgba(73, 118, 181, 0.25);
+        box-shadow: 0 4px 12px rgba(46, 125, 50, 0.25);
 
         &:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(73, 118, 181, 0.35);
+          box-shadow: 0 6px 16px rgba(46, 125, 50, 0.35);
         }
 
         &.mat-warn {
@@ -131,7 +131,7 @@ $border-color: rgba(73, 118, 181, 0.15);
         border: 2px solid $border-color;
 
         &:hover {
-          background-color: rgba(73, 118, 181, 0.04);
+          background-color: rgba(46, 125, 50, 0.04);
           border-color: $text-secondary;
           transform: translateY(-2px);
         }
