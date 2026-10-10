@@ -14,7 +14,7 @@ public sealed class ProductsController(IMediator mediator, IFileStorage fileStor
 
     [HttpPost("image"), Authorize]
     [RequestSizeLimit(5 * 1024 * 1024)]
-    public async Task<ActionResult<UploadedProductImageDto>> UploadImage([FromForm] IFormFile? file, CancellationToken ct)
+    public async Task<ActionResult<UploadedProductImageDto>> UploadImage(IFormFile? file, CancellationToken ct)
     {
         if (file is null || file.Length == 0 || file.Length > 5 * 1024 * 1024)
             return BadRequest("Odaberite sliku veličine do 5 MB.");
