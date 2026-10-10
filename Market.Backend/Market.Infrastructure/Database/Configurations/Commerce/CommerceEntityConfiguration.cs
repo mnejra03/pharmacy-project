@@ -10,7 +10,7 @@ public sealed class CartEntityConfiguration : IEntityTypeConfiguration<CartEntit
     {
         b.ToTable("Carts");
         b.HasKey(x => x.Id);
-        b.HasOne<MarketUserEntity>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        b.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
         b.HasIndex(x => new { x.UserId, x.IsCompleted });
     }
 }
@@ -22,7 +22,7 @@ public sealed class CartItemEntityConfiguration : IEntityTypeConfiguration<CartI
         b.ToTable("CartItems");
         b.HasKey(x => x.Id);
         b.HasOne(x => x.Cart).WithMany(x => x.Items).HasForeignKey(x => x.CartId).OnDelete(DeleteBehavior.Cascade);
-        b.HasOne<ProductEntity>().WithMany().HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.Restrict);
+        b.HasOne(x => x.Product).WithMany().HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.Restrict);
         b.HasIndex(x => new { x.CartId, x.ProductId }).IsUnique();
     }
 }
@@ -38,7 +38,7 @@ public sealed class OrderEntityConfiguration : IEntityTypeConfiguration<OrderEnt
         b.Property(x => x.PaymentReference).HasMaxLength(200);
         b.Property(x => x.ShippingAddress).HasMaxLength(1000).IsRequired();
         b.Property(x => x.TotalPrice).HasPrecision(18, 2);
-        b.HasOne<MarketUserEntity>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
+        b.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
     }
 }
 
@@ -51,7 +51,7 @@ public sealed class OrderItemEntityConfiguration : IEntityTypeConfiguration<Orde
         b.Property(x => x.ProductName).HasMaxLength(200).IsRequired();
         b.Property(x => x.UnitPrice).HasPrecision(18, 2);
         b.HasOne(x => x.Order).WithMany(x => x.Items).HasForeignKey(x => x.OrderId).OnDelete(DeleteBehavior.Cascade);
-        b.HasOne<ProductEntity>().WithMany().HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.Restrict);
+        b.HasOne(x => x.Product).WithMany().HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.Restrict);
     }
 }
 
@@ -61,7 +61,7 @@ public sealed class WishlistEntityConfiguration : IEntityTypeConfiguration<Wishl
     {
         b.ToTable("Wishlists");
         b.HasKey(x => x.Id);
-        b.HasOne<MarketUserEntity>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        b.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
         b.HasIndex(x => x.UserId).IsUnique();
     }
 }
@@ -73,7 +73,7 @@ public sealed class WishlistItemEntityConfiguration : IEntityTypeConfiguration<W
         b.ToTable("WishlistItems");
         b.HasKey(x => x.Id);
         b.HasOne(x => x.Wishlist).WithMany(x => x.Items).HasForeignKey(x => x.WishlistId).OnDelete(DeleteBehavior.Cascade);
-        b.HasOne<ProductEntity>().WithMany().HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.Restrict);
+        b.HasOne(x => x.Product).WithMany().HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.Restrict);
         b.HasIndex(x => new { x.WishlistId, x.ProductId }).IsUnique();
     }
 }

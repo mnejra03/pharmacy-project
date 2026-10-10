@@ -12,6 +12,13 @@ public sealed class CartController(IMediator mediator) : ControllerBase
     [HttpPost("checkout")] public async Task<ActionResult<OrderDto>> Checkout([FromBody] CheckoutCommand command, CancellationToken ct) => Ok(await mediator.Send(command, ct));
 }
 
+[ApiController, Route("api/payments"), Authorize]
+public sealed class PaymentsController(IMediator mediator) : ControllerBase
+{
+    [HttpPost("intent")]
+    public async Task<ActionResult<CartPaymentIntentDto>> CreateIntent(CancellationToken ct) => Ok(await mediator.Send(new CreateCartPaymentIntentCommand(), ct));
+}
+
 [ApiController, Route("api/orders"), Authorize]
 public sealed class OrdersController(IMediator mediator) : ControllerBase
 {

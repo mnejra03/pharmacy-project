@@ -15,7 +15,7 @@ import { ToasterService } from '../../../core/services/toaster.service';
   <p class="result-count">Pronađeno proizvoda: {{total}}</p>
   <div class="product-grid" *ngIf="products.length; else empty">
     <mat-card class="product-card" *ngFor="let p of products">
-      <a class="product-image" [routerLink]="['/product',p.id]"><img [src]="p.imageUrl" [alt]="p.name" loading="lazy"></a>
+      <a class="product-image" [routerLink]="['/product',p.id]"><img [src]="p.imageUrl" [alt]="p.name" loading="lazy" (error)="imageFallback($event)"></a>
       <mat-card-content><small>{{p.categoryName}}<ng-container *ngIf="p.brandName"> · {{p.brandName}}</ng-container></small><a class="product-name" [routerLink]="['/product',p.id]">{{p.name}}</a><p class="stock">{{p.quantityInStock > 0 ? 'Dostupno: ' + p.quantityInStock : 'Trenutno nije dostupno'}}</p><div class="price-row"><span [class.discount-price]="p.isDiscounted">{{p.currentPrice | number:'1.2-2'}} KM</span><del *ngIf="p.isDiscounted">{{p.price | number:'1.2-2'}} KM</del></div></mat-card-content>
       <mat-card-actions><button mat-raised-button color="primary" (click)="add(p)" [disabled]="p.quantityInStock<1">Dodaj u korpu</button><button mat-icon-button aria-label="Dodaj u favorite" (click)="favorite(p)"><mat-icon>favorite_border</mat-icon></button></mat-card-actions>
     </mat-card>
@@ -49,6 +49,7 @@ export class CatalogComponent implements OnInit {
   load(){this.page=1;this.fetch();}
   fetch(){this.api.getProducts({search:this.search||undefined,categoryId:this.categoryId,brandId:this.brandId,discounted:this.discounted||undefined,page:this.page,pageSize:12}).subscribe(x=>{this.products=x.items;this.total=x.totalItems;this.totalPages=Math.max(1,x.totalPages);});}
   changePage(delta:number){this.page+=delta;this.fetch();window.scrollTo({top:0,behavior:'smooth'});}
+  imageFallback(event:Event){(event.target as HTMLImageElement).src='/images/product-placeholder.svg';}
   add(p:Product){if(!this.auth.isAuthenticated()){this.toaster.error('Prijavite se da biste dodali proizvod u korpu.');return;}this.api.addToCart(p.id).subscribe({next:()=>this.toaster.success('Proizvod je dodan u korpu.'),error:()=>this.toaster.error('Proizvod nije moguće dodati u korpu.')});}
   favorite(p:Product){if(!this.auth.isAuthenticated()){this.toaster.error('Prijavite se da biste sačuvali favorite.');return;}this.api.addToWishlist(p.id).subscribe({next:()=>this.toaster.success('Dodano u favorite.'),error:()=>this.toaster.error('Proizvod nije moguće dodati u favorite.')});}
 }

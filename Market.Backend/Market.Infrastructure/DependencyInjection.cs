@@ -54,6 +54,7 @@ public static class DependencyInjection
         services.AddSignalR();
         services.AddScoped<IChatNotifier, SignalRChatNotifier>();
         services.AddScoped<IFileStorage, LocalFileStorage>();
+        services.AddHttpClient<IStripePaymentGateway, StripePaymentGateway>();
 
         // TimeProvider (if used in handlers/services)
         services.AddSingleton<TimeProvider>(TimeProvider.System);

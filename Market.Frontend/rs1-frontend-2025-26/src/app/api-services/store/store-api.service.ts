@@ -10,6 +10,7 @@ export interface CartItem { id:number; productId:number; name:string; imageUrl:s
 export interface Cart { items:CartItem[]; total:number; itemCount:number; }
 export interface OrderItem { productId:number; name:string; quantity:number; unitPrice:number; }
 export interface PharmacyOrder { id:number; orderedAtUtc:string; status:string; totalPrice:number; paymentMethod:string; shippingAddress:string; items:OrderItem[]; }
+export interface CartPaymentIntent { paymentIntentId:string; clientSecret:string; publishableKey:string; amount:number; currency:string; }
 export interface ProductReview { id:number; userName:string; rating:number; text:string; createdAtUtc:string; }
 export interface SaveProduct { name:string; description:string; price:number; quantityInStock:number; imageUrl:string; categoryId:number; brandId?:number; isDiscounted:boolean; discountPercentage?:number; expiryDate?:string; }
 
@@ -27,12 +28,15 @@ export class StoreApiService {
   getBrands(){return this.http.get<ProductBrand[]>(`${this.base}/api/brands`);}
   createProduct(body:SaveProduct){return this.http.post<Product>(`${this.base}/api/products`,body);}
   updateProduct(id:number,body:SaveProduct){return this.http.put<Product>(`${this.base}/api/products/${id}`,body);}
+  uploadProductImage(file:File){const form=new FormData();form.append('file',file);return this.http.post<{imageUrl:string}>(`${this.base}/api/products/image`,form);}
   deleteProduct(id:number){return this.http.delete<void>(`${this.base}/api/products/${id}`);}
+  restockProduct(id:number,quantity:number){return this.http.post<number>(`${this.base}/api/products/${id}/restock`,{quantity});}
   getCart(){return this.http.get<Cart>(`${this.base}/api/cart`);}
   addToCart(productId:number,quantity=1){return this.http.post<Cart>(`${this.base}/api/cart/items`,{productId,quantity});}
   updateCartItem(id:number,quantity:number,savedForLater:boolean){return this.http.put<Cart>(`${this.base}/api/cart/items/${id}`,{id,quantity,savedForLater});}
   removeCartItem(id:number){return this.http.delete<void>(`${this.base}/api/cart/items/${id}`);}
-  checkout(shippingAddress:string,paymentMethod:string){return this.http.post<PharmacyOrder>(`${this.base}/api/cart/checkout`,{shippingAddress,paymentMethod});}
+  createPaymentIntent(){return this.http.post<CartPaymentIntent>(`${this.base}/api/payments/intent`,{});}
+  checkout(shippingAddress:string,paymentMethod:string,paymentReference?:string){return this.http.post<PharmacyOrder>(`${this.base}/api/cart/checkout`,{shippingAddress,paymentMethod,paymentReference});}
   getOrders(all=false){return this.http.get<PharmacyOrder[]>(`${this.base}/api/orders`,{params:{all:String(all)}});}
   updateOrderStatus(id:number,status:string){return this.http.put<void>(`${this.base}/api/orders/${id}/status`,{id,status});}
   getWishlist(){return this.http.get<Product[]>(`${this.base}/api/wishlist`);}

@@ -8,7 +8,9 @@ public sealed record GetCartQuery : IRequest<CartDto>;
 public sealed record AddCartItemCommand(int ProductId, int Quantity = 1) : IRequest<CartDto>;
 public sealed record UpdateCartItemCommand(int Id, int Quantity, bool SavedForLater) : IRequest<CartDto>;
 public sealed record RemoveCartItemCommand(int Id) : IRequest;
-public sealed record CheckoutCommand(string ShippingAddress, string PaymentMethod) : IRequest<OrderDto>;
+public sealed record CheckoutCommand(string ShippingAddress, string PaymentMethod, string? PaymentReference = null) : IRequest<OrderDto>;
+public sealed record CreateCartPaymentIntentCommand : IRequest<CartPaymentIntentDto>;
+public sealed record CartPaymentIntentDto(string PaymentIntentId, string ClientSecret, string PublishableKey, decimal Amount, string Currency);
 public sealed record OrderItemDto(int ProductId, string Name, int Quantity, decimal UnitPrice);
 public sealed record OrderDto(int Id, DateTime OrderedAtUtc, string Status, decimal TotalPrice, string PaymentMethod, string ShippingAddress, IReadOnlyList<OrderItemDto> Items);
 public sealed record GetOrdersQuery(bool All = false) : IRequest<IReadOnlyList<OrderDto>>;
@@ -87,7 +89,25 @@ public sealed class CheckoutValidator : AbstractValidator<CheckoutCommand>
     public CheckoutValidator() { RuleFor(x => x.ShippingAddress).NotEmpty().MaximumLength(1000); RuleFor(x => x.PaymentMethod).Must(x => new[] { "Card", "CashOnDelivery" }.Contains(x)).WithMessage("Nepoznat način plaćanja."); }
 }
 
-public sealed class CheckoutHandler(IAppDbContext db, IAppCurrentUser user) : IRequestHandler<CheckoutCommand, OrderDto>
+public sealed class CreateCartPaymentIntentHandler(IAppDbContext db, IAppCurrentUser user, IStripePaymentGateway stripe) : IRequestHandler<CreateCartPaymentIntentCommand, CartPaymentIntentDto>
+{
+    public async Task<CartPaymentIntentDto> Handle(CreateCartPaymentIntentCommand request, CancellationToken ct)
+    {
+        if (user.UserId is not int userId) throw new MarketConflictException("Prijava je obavezna.");
+        if (!stripe.IsConfigured) throw new MarketConflictException("Stripe test ključevi nisu podešeni. Postavite Stripe__SecretKey i Stripe__PublishableKey.");
+        var cart = await GetCartHandler.GetActiveCart(db, user, ct);
+        var items = cart.Items.Where(i => !i.SavedForLater).ToList();
+        if (items.Count == 0) throw new MarketConflictException("Korpa je prazna.");
+        foreach (var item in items)
+            if (item.Product is null || item.Product.QuantityInStock < item.Quantity) throw new MarketConflictException("Jedan ili više proizvoda više nisu dostupni u traženoj količini.");
+        var total = items.Sum(i => GetCartHandler.CurrentPrice(i.Product!) * i.Quantity);
+        var amountMinor = decimal.ToInt64(decimal.Round(total * 100m, 0, MidpointRounding.AwayFromZero));
+        var intent = await stripe.CreateIntentAsync(amountMinor, "bam", userId.ToString(), ct);
+        return new(intent.Id, intent.ClientSecret, stripe.PublishableKey, total, intent.Currency);
+    }
+}
+
+public sealed class CheckoutHandler(IAppDbContext db, IAppCurrentUser user, IStripePaymentGateway stripe) : IRequestHandler<CheckoutCommand, OrderDto>
 {
     public async Task<OrderDto> Handle(CheckoutCommand request, CancellationToken ct)
     {
@@ -98,7 +118,16 @@ public sealed class CheckoutHandler(IAppDbContext db, IAppCurrentUser user) : IR
         {
             if (item.Product is null || item.Product.QuantityInStock < item.Quantity) throw new MarketConflictException($"Proizvod {item.Product?.Name ?? item.ProductId.ToString()} više nije dostupan u traženoj količini.");
         }
-        var order = new OrderEntity { UserId = user.UserId!.Value, OrderedAtUtc = DateTime.UtcNow, Status = "Pending", PaymentMethod = request.PaymentMethod, ShippingAddress = request.ShippingAddress.Trim() };
+        var totalDue = items.Sum(i => GetCartHandler.CurrentPrice(i.Product!) * i.Quantity);
+        if (request.PaymentMethod == "Card")
+        {
+            if (string.IsNullOrWhiteSpace(request.PaymentReference)) throw new MarketConflictException("Kartično plaćanje nije potvrđeno.");
+            var payment = await stripe.GetIntentAsync(request.PaymentReference, ct);
+            var expectedMinor = decimal.ToInt64(decimal.Round(totalDue * 100m, 0, MidpointRounding.AwayFromZero));
+            if (payment is null || payment.Status != "succeeded" || payment.UserId != user.UserId!.Value.ToString() || payment.Currency != "bam" || payment.AmountMinor != expectedMinor)
+                throw new MarketConflictException("Stripe ne potvrđuje uspješno plaćanje za ovu korpu.");
+        }
+        var order = new OrderEntity { UserId = user.UserId!.Value, OrderedAtUtc = DateTime.UtcNow, Status = "Pending", PaymentMethod = request.PaymentMethod, PaymentReference = request.PaymentReference, ShippingAddress = request.ShippingAddress.Trim() };
         foreach (var item in items)
         {
             var product = item.Product!; var price = GetCartHandler.CurrentPrice(product);

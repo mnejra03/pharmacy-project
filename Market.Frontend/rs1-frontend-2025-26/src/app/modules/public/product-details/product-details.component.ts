@@ -8,7 +8,7 @@ import { ToasterService } from '../../../core/services/toaster.service';
 @Component({selector:'app-product-details',standalone:false,template:`
 <section class="page detail-page" *ngIf="product as p; else loading">
   <a mat-button routerLink="/catalog">← Nazad na proizvode</a>
-  <div class="detail-card"><div class="detail-image"><img [src]="p.imageUrl" [alt]="p.name"></div>
+  <div class="detail-card"><div class="detail-image"><img [src]="p.imageUrl" [alt]="p.name" (error)="imageFallback($event)"></div>
     <div class="detail-info"><small>{{p.categoryName}}<ng-container *ngIf="p.brandName"> · {{p.brandName}}</ng-container></small><h1>{{p.name}}</h1>
       <p>{{p.description}}</p><p class="rating">★ {{p.averageRating | number:'1.1-1'}} <span>({{p.reviewCount}} recenzija)</span></p>
       <div class="price">{{p.currentPrice | number:'1.2-2'}} KM <del *ngIf="p.isDiscounted">{{p.price | number:'1.2-2'}} KM</del></div>
@@ -29,6 +29,7 @@ export class ProductDetailsComponent implements OnInit {
   reviewForm=this.fb.group({rating:[5,[Validators.required]],text:['',[Validators.required,Validators.maxLength(2000)]]});
   ngOnInit(){const id=Number(this.route.snapshot.paramMap.get('id'));this.api.getProduct(id).subscribe({next:p=>{this.product=p;this.loadReviews();},error:()=>this.toaster.error('Proizvod nije pronađen.')});}
   loadReviews(){if(this.product)this.api.getReviews(this.product.id).subscribe(x=>this.reviews=x);}
+  imageFallback(event:Event){(event.target as HTMLImageElement).src='/images/product-placeholder.svg';}
   addToCart(){if(!this.product)return;this.api.addToCart(this.product.id).subscribe({next:()=>this.toaster.success('Proizvod je dodan u korpu.'),error:()=>this.toaster.error('Prijavite se ili pokušajte ponovo.')});}
   favorite(){if(!this.product)return;this.api.addToWishlist(this.product.id).subscribe({next:()=>this.toaster.success('Dodano u favorite.'),error:()=>this.toaster.error('Prijavite se ili pokušajte ponovo.')});}
   submitReview(){if(!this.product||this.reviewForm.invalid)return;const v=this.reviewForm.getRawValue();this.api.addReview(this.product.id,v.rating!,v.text!).subscribe({next:()=>{this.reviewForm.reset({rating:5,text:''});this.loadReviews();this.toaster.success('Recenzija je sačuvana.');},error:()=>this.toaster.error('Recenziju nije moguće sačuvati.')});}
