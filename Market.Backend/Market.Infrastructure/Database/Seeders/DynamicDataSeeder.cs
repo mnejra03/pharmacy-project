@@ -137,16 +137,20 @@ public static class DynamicDataSeeder
 
     private static async Task SeedDemoOrdersAsync(DatabaseContext context)
     {
-        // Keep the legacy project's four sample orders available in local development.
-        // Never add sample orders on top of orders that already exist.
-        if (await context.Orders.AnyAsync()) return;
+        // Seed each demo order type independently and idempotently so existing
+        // customer orders do not prevent the example supply request from appearing.
+        var seedCustomerOrders = !await context.Orders.AnyAsync(o => !o.IsSupplyOrder);
+        var seedSupplyOrder = !await context.Orders.AnyAsync(o => o.IsSupplyOrder);
 
         var admin = await context.Users.FirstOrDefaultAsync(u => u.Email == "admin@pharmacy.local");
         var customer = await context.Users.FirstOrDefaultAsync(u => u.Email == "customer@pharmacy.local");
+        var pharmacist = await context.Users.FirstOrDefaultAsync(u => u.Email == "pharmacist@pharmacy.local");
         var products = await context.Products.OrderBy(p => p.Id).Take(4).ToListAsync();
-        if (admin is null || customer is null || products.Count < 3) return;
+        if (products.Count < 3) return;
 
         var now = DateTime.UtcNow;
+        if (seedCustomerOrders && admin is not null && customer is not null)
+        {
         var demoOrders = new[]
         {
             (User: customer, Status: "Pending", Payment: "Kartica (demo)", Address: "Sarajevo, BiH", DaysAgo: 5, Lines: new[] { (Product: products[0], Quantity: 2), (Product: products[1], Quantity: 1) }),
@@ -173,6 +177,33 @@ public static class DynamicDataSeeder
                 PaymentMethod = seed.Payment,
                 ShippingAddress = seed.Address,
                 Items = items
+            });
+        }
+        }
+
+        if (seedSupplyOrder && pharmacist is not null)
+        {
+            var product = products[0];
+            const int quantity = 8;
+            context.Orders.Add(new OrderEntity
+            {
+                UserId = pharmacist.Id,
+                OrderedAtUtc = now.AddHours(-3),
+                Status = "Pending",
+                TotalPrice = product.Price * quantity,
+                PaymentMethod = "Internal Transfer",
+                ShippingAddress = "Apoteka Sarajevo",
+                IsSupplyOrder = true,
+                Items =
+                {
+                    new OrderItemEntity
+                    {
+                        ProductId = product.Id,
+                        ProductName = product.Name,
+                        Quantity = quantity,
+                        UnitPrice = product.Price
+                    }
+                }
             });
         }
 

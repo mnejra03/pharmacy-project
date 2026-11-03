@@ -108,6 +108,7 @@ U svježoj Development bazi seju se demo korisnici, katalog, oglasi i primjeri n
 | Korisnik | `customer@pharmacy.local` | `Customer123!` |
 
 Seeder dopunjava nedostajuće demo podatke; postojeće podatke u bazi ne briše. Demo nalozi i lozinke služe samo za lokalni razvoj i ne smiju se koristiti u produkciji.
+Na svježoj Development bazi dodaje se i primjer zahtjeva za dopunu zaliha na čekanju, vidljiv farmaceutu i administratoru.
 
 ## Blob slike i Stripe testno plaćanje
 
