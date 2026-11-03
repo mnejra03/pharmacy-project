@@ -10,6 +10,7 @@ export interface CartItem { id:number; productId:number; name:string; imageUrl:s
 export interface Cart { items:CartItem[]; total:number; itemCount:number; }
 export interface OrderItem { productId:number; name:string; quantity:number; unitPrice:number; }
 export interface PharmacyOrder { id:number; orderedAtUtc:string; status:string; totalPrice:number; paymentMethod:string; shippingAddress:string; customerName:string; customerEmail:string; items:OrderItem[]; }
+export interface PharmacySupplyOrder { id:number; orderedAtUtc:string; status:string; totalPrice:number; pharmacistName:string; pharmacistEmail:string; items:OrderItem[]; }
 export interface CartPaymentIntent { paymentIntentId:string; clientSecret:string; publishableKey:string; amount:number; currency:string; }
 export interface ProductReview { id:number; userName:string; rating:number; text:string; createdAtUtc:string; }
 export interface SaveProduct { name:string; description:string; price:number; quantityInStock:number; imageUrl:string; categoryId:number; brandId?:number; isDiscounted:boolean; discountPercentage?:number; expiryDate?:string; }
@@ -39,6 +40,9 @@ export class StoreApiService {
   checkout(shippingAddress:string,paymentMethod:string,paymentReference?:string){return this.http.post<PharmacyOrder>(`${this.base}/api/cart/checkout`,{shippingAddress,paymentMethod,paymentReference});}
   getOrders(all=false){return this.http.get<PharmacyOrder[]>(`${this.base}/api/orders`,{params:{all:String(all)}});}
   updateOrderStatus(id:number,status:string){return this.http.put<void>(`${this.base}/api/orders/${id}/status`,{id,status});}
+  getSupplyOrders(all=false){return this.http.get<PharmacySupplyOrder[]>(`${this.base}/api/supply-orders`,{params:{all:String(all)}});}
+  createSupplyOrder(productId:number,quantity:number){return this.http.post<number>(`${this.base}/api/supply-orders`,{productId,quantity});}
+  updateSupplyOrderStatus(id:number,status:'Approved'|'Rejected'){return this.http.put<void>(`${this.base}/api/supply-orders/${id}/status`,{id,status});}
   getWishlist(){return this.http.get<Product[]>(`${this.base}/api/wishlist`);}
   addToWishlist(productId:number){return this.http.post<void>(`${this.base}/api/wishlist/${productId}`,{});}
   removeFromWishlist(productId:number){return this.http.delete<void>(`${this.base}/api/wishlist/${productId}`);}

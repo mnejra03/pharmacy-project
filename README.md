@@ -143,4 +143,6 @@ U stvarnom fajlu spoji ove vrijednosti u postojeće `ConnectionStrings` i `Strip
 
 ## Funkcionalnosti
 
-Katalog proizvoda i brendova, kategorije, korpa sa spremanjem za kasnije, narudžbe i checkout, favoriti, ocjene i recenzije, recepti, obavijesti, chat, korisnički profili, admin upravljanje korisnicima/proizvodima/narudžbama/oglasima, upravljanje zalihama, slike i Stripe testno plaćanje.
+Katalog proizvoda i brendova, kategorije, korpa sa spremanjem za kasnije, narudžbe i checkout, favoriti, ocjene i recenzije, recepti, obavijesti, chat, korisnički profili, admin upravljanje korisnicima/proizvodima/narudžbama/oglasima, direktno zaprimanje zaliha i zahtjevi farmaceuta za nabavku koje administrator odobrava ili odbija, slike i Stripe testno plaćanje.
+
+Mapa prenesenih funkcionalnosti, poznatih ograničenja i odluke o zadržavanju kataloga nalazi se u [MIGRATION_MAP.md](MIGRATION_MAP.md).

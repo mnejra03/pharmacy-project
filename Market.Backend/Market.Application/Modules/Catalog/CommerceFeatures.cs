@@ -12,7 +12,7 @@ public sealed record CheckoutCommand(string ShippingAddress, string PaymentMetho
 public sealed record CreateCartPaymentIntentCommand : IRequest<CartPaymentIntentDto>;
 public sealed record CartPaymentIntentDto(string PaymentIntentId, string ClientSecret, string PublishableKey, decimal Amount, string Currency);
 public sealed record OrderItemDto(int ProductId, string Name, int Quantity, decimal UnitPrice);
-public sealed record OrderDto(int Id, DateTime OrderedAtUtc, string Status, decimal TotalPrice, string PaymentMethod, string ShippingAddress, string CustomerName, string CustomerEmail, IReadOnlyList<OrderItemDto> Items);
+public sealed record OrderDto(int Id, DateTime OrderedAtUtc, string Status, decimal TotalPrice, string PaymentMethod, string ShippingAddress, string CustomerName, string CustomerEmail, IReadOnlyList<OrderItemDto> Items, bool IsSupplyOrder = false);
 public sealed record GetOrdersQuery(bool All = false) : IRequest<IReadOnlyList<OrderDto>>;
 public sealed record UpdateOrderStatusCommand(int Id, string Status) : IRequest;
 
@@ -148,7 +148,7 @@ public sealed class GetOrdersHandler(IAppDbContext db, IAppCurrentUser user) : I
     {
         if (user.UserId is null) throw new MarketConflictException("Prijava je obavezna.");
         if (request.All && !user.IsAdmin && !user.IsPharmacist) throw new MarketConflictException("Nemate pravo pregledati sve narudžbe.");
-        var query = db.Orders.AsNoTracking().Include(o => o.Items).Include(o => o.User).AsQueryable();
+        var query = db.Orders.AsNoTracking().Where(o => !o.IsSupplyOrder).Include(o => o.Items).Include(o => o.User).AsQueryable();
         if (!request.All) query = query.Where(o => o.UserId == user.UserId);
         var orders = await query.OrderByDescending(o => o.OrderedAtUtc).ToListAsync(ct);
         return orders.Select(o => new OrderDto(o.Id, o.OrderedAtUtc, o.Status, o.TotalPrice, o.PaymentMethod, o.ShippingAddress, $"{o.User?.FirstName} {o.User?.LastName}".Trim(), o.User?.Email ?? string.Empty, o.Items.Select(i => new OrderItemDto(i.ProductId, i.ProductName, i.Quantity, i.UnitPrice)).ToList())).ToList();
@@ -162,6 +162,7 @@ public sealed class UpdateOrderStatusHandler(IAppDbContext db, IAppCurrentUser u
         if (!user.IsAdmin && !user.IsPharmacist) throw new MarketConflictException("Samo administrator ili farmaceut može mijenjati narudžbe.");
         if (!new[] { "Pending", "Processing", "Shipped", "Completed", "Cancelled" }.Contains(request.Status)) throw new MarketConflictException("Status narudžbe nije ispravan.");
         var order = await db.Orders.FirstOrDefaultAsync(o => o.Id == request.Id, ct) ?? throw new MarketNotFoundException("Narudžba nije pronađena.");
+        if (order.IsSupplyOrder) throw new MarketConflictException("Narudžbu zaliha ažurirajte kroz pregled nabavke.");
         order.Status = request.Status; await db.SaveChangesAsync(ct);
     }
 }

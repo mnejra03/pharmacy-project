@@ -1,33 +1,44 @@
-# Pharmacy migration map
+# Pharmacy feature migration map
 
-Source: `../NewPharmacy` and `../frontend`. Target: `Market.Backend` and `Market.Frontend/rs1-frontend-2025-26`.
+Source project: `../NewPharmacy` and `../frontend` (when available in the workspace). Target: `Market.Backend` and `Market.Frontend/rs1-frontend-2025-26`.
 
-The requested scope excludes catalog, cart, checkout, payment, and order flows. The template's demo catalog and sales-order modules will also be removed. JWT authentication and FluentValidation remain the template implementation.
+## Architecture requirements
 
-| Source feature | Old backend endpoints / entities / DTOs | Old frontend screens / services | Target and disposition |
-|---|---|---|---|
-| Authentication and accounts | `AuthEndpoint/*`; `MyAppUserEndpoints/*`; `MyAppUser`, `MyAuthenticationToken`; `RegisterUserDTO`, `CreateMyAppUserDTO`, `UpdateMyAppUserDTO` | `auth/{login,register}`, auth/user services, admin `users` | Keep template JWT login/logout/refresh; add CQRS registration, profile/password updates, and paged admin user listing/edit/deactivation with FluentValidation. A new staff user registers first, then an administrator assigns the role. |
-| Pharmacist profile | `PharmacistEndpoints/*`; shared `MyAppUser` role/profile data | pharmacist profile/dashboard and profile service | Profile/password use cases use CQRS and template JWT identity; profile image upload uses the backend local file store. |
-| Chat | `ChatEndpoints/*`; `Chat`, `ChatCreateDTO`, `ChatGetDTO`; `ChatHub` | public chat and chat service | Authenticated HTTP history/send and SignalR push are migrated. Pharmacists can reply to customers; contacts are scoped to the user. |
-| Notifications | `NotificationEndpoints/*`; `Notification`, `FullNotificationDTO` | pharmacist notifications and notification service | Migrate user-scoped list, read, unread, and delete. New customer chat messages notify pharmacists and are pushed over SignalR. Order-linked details are removed. |
-| Recipes / prescription scans | `RecipeEndpoints/*`; `Recipe`; upload DTO nested in `RecipeEndpoints.cs` | pharmacist/customer recipes and recipe service | Migrate customer submission, pharmacist review UI/status updates, and protected scan download. Scan bytes remain in the database (10 MB maximum). |
-| Advertisements and media | `AdvertisementEndpoints/*`; `Advertisement`; image updates; `AzureBlobService` | public advertisement, admin media, advertisement service | Migrate advertisement CRUD, public slideshow, and admin image upload. Uploads are stored under backend `wwwroot/uploads`; legacy Azure Blob credentials/provider are not copied. |
-| Pharmacist stock / supplier orders | `OrderEndpoints/PostOrderMedicineEndpoint`, `GetMySupplyOrdersEndpoint`, `UpdateSupplyOrderStatusEndpoint`; `Supplier`, supply `Order` | pharmacist `stock`, `customer-order`, `my-orders`; `stock.service`, `order.service` | Exclude because these screens and flows depend on the removed medicine catalog/order domain. |
-| Admin dashboard | `AdminEndpoints/GetDashboardEndpoint`, `DashboardStatsDto` | admin dashboard and service | Rebuild user, pharmacist, recipe, pending-recipe, and unread-notification counts. No sales, order, or stock metrics. |
-| Catalog, category, brand, cart, checkout, payment, customer orders | `ProductEndpoints/*`, `CategoryEndpoints/*`, `BrandsEndpoint/*`, `CartEndpoints/*`, `OrderEndpoints/*`, `OrderDetailEndpoints/*`, `PaymentEndpoints/*`; `Product`, `Category`, `Brand`, `Cart`, `CartDetail`, `Order`, `OrderDetail`, `Sale`, `Discount`; product/cart/order/payment DTOs | public product/category/brand/search/details/cart/checkout/orders; admin products/orders; related product/category/brand/cart/order services | Remove from template and do not migrate, per explicit scope. |
-| Favorites and product reviews | `WishListEndpoints/*`, `ReviewEndpoints/*`; `WishList`, `WishListDetail`, `Review`; `WishListItemUpsertDTO`, `ReviewDTO` | public `wish-list`, product review form; `wishlist.service`, `review.service` | Exclude because both are tied to the removed product catalog. |
-| Shared images and UI behavior | product/brand/ad image upload endpoints; `FileHelper` | product image preview; advertisement slideshow; shared image assets | Migrate only generic/advertisement/recipe media. The old product zoom/download behavior is catalog-bound and excluded with catalog screens. |
+- Backend is split into `Market.Domain`, `Market.Application`, `Market.Infrastructure`, `Market.API`, and `Market.Shared`.
+- Backend use cases go through MediatR commands/queries and handlers. FluentValidation validators are discovered from the Application assembly and run through the validation pipeline.
+- JWT authentication and authorization are configured in the API. Entity Framework migrations run on startup; Development seeds sample accounts and application data.
+- Angular uses NgModules, lazy-loaded feature modules, non-standalone components, and Reactive Forms.
 
-## Target template baseline
+## Migrated features
 
-- Backend layers: `Market.Domain`, `Market.Application`, `Market.Infrastructure`, `Market.API`, `Market.Shared`.
-- Existing template demo entities/flows to remove: `ProductEntity`, `ProductCategoryEntity`, `OrderEntity`, `OrderItemEntity`, corresponding CQRS modules/controllers/configurations/seed data and EF migrations.
-- Preserve `MarketUserEntity`, `RefreshTokenEntity`, JWT services, exception middleware, validation pipeline, and FluentValidation registration.
-- Frontend stays NgModule-based and non-standalone, with lazy-loaded auth/admin/client/public modules. Remove demo catalog/order components and API services; new API services remain transport-only.
+| Feature | Target implementation | Status |
+|---|---|---|
+| Login, registration, logout, token refresh | Auth API, JWT, CQRS commands and validators; lazy-loaded auth module | Migrated |
+| User profile, password change, profile image | Account commands and user API; image upload uses configured Azure Blob Storage or local fallback | Migrated |
+| Admin user management and dashboard | Paged user query, filters, role updates, dashboard statistics | Migrated |
+| Chat | Authenticated history/send API and SignalR notifications | Migrated |
+| Notifications | User-scoped list, unread count, read and delete operations | Migrated |
+| Recipes and prescription scans | Customer submission, pharmacist review/status, protected scan download | Migrated; scans are stored in SQL with a 10 MB limit |
+| Advertisements | Public display and admin CRUD/image upload | Migrated; storage provider is configurable |
+| Product catalog, categories, brands, product image upload | CQRS catalog API, admin screens, product details and reviews | Retained and migrated by the later project decision |
+| Cart, save for later, checkout, Stripe, customer orders | CQRS commerce handlers, payment intent, order history and status updates | Retained and migrated by the later project decision |
+| Favorites and product reviews | Wishlist and review APIs and screens | Retained and migrated with the catalog |
+| Direct stock intake | Authorized product restock command and admin product screen | Migrated |
+| Pharmacist supply requests | Pharmacist can request product quantities; admin can approve/reject; approved quantities update stock and notify the pharmacist | Migrated in `AddSupplyOrders` |
 
-## Remaining technical constraints
+## Deliberate decision about catalog and orders
 
-- The source project has no mail/SMS token delivery implementation to migrate; outbound activation/reset invitations remain unimplemented.
-- Drag-and-drop behavior is not present in the source feature screens.
-- Local development uses EF InMemory and resets data on backend restart; non-development environments use SQL Server migrations. Local file storage requires persistent writable backend storage in production; Azure Blob credentials/provider were not migrated.
-- Recipe scan bytes are stored in the database, with a 10 MB upload limit.
+The original migration note requested removal of `Product`, `ProductCategory`, and `Order`. A later explicit instruction requested that the restored catalog and commerce remain. This project follows the later instruction, so these entities, tables, API routes, and screens remain. If the professor expects the original removal rule to be followed literally, that requirement conflicts with the current project direction and needs a decision before removing these features.
+
+## Features not migrated / scope limits
+
+- The old project does not contain an email/SMS delivery flow for activation or password-reset tokens. The new app has no real outbound token delivery; the forgot-password screen is currently only a placeholder.
+- Drag-and-drop was not implemented in the source application and has not been added to the migration.
+- Supplier records existed as seeded data in the source, but its supply-order endpoint did not select a supplier. The migrated supply request therefore tracks product, quantity, pharmacist, status, and stock update, not supplier purchasing/contact management.
+- Recipe scan files are stored in the database. Product, advertisement, and profile images use the configured file-storage provider; without Azure configuration, the backend falls back to local files.
+
+## Verification
+
+- Frontend: `npm ci` and `npm start` from `Market.Frontend/rs1-frontend-2025-26`; `npm run build` verifies compilation.
+- Backend: `dotnet build Market.Backend.sln` from `Market.Backend`; startup requires an available SQL Server and applies migrations automatically.
+- Run `dotnet test Market.Backend.sln` and `npm test` when exercising the test suites; automated UI and integration coverage should be extended for new business flows.

@@ -32,6 +32,7 @@ public sealed class OrderEntity : BaseEntity
     public string PaymentMethod { get; set; } = string.Empty;
     public string? PaymentReference { get; set; }
     public string ShippingAddress { get; set; } = string.Empty;
+    public bool IsSupplyOrder { get; set; }
     public ICollection<OrderItemEntity> Items { get; set; } = new List<OrderItemEntity>();
 }
 

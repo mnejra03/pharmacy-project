@@ -26,6 +26,25 @@ public sealed class OrdersController(IMediator mediator) : ControllerBase
     [HttpPut("{id:int}/status")] public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateOrderStatusCommand command, CancellationToken ct) { await mediator.Send(command with { Id = id }, ct); return NoContent(); }
 }
 
+[ApiController, Route("api/supply-orders"), Authorize]
+public sealed class SupplyOrdersController(IMediator mediator) : ControllerBase
+{
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<SupplyOrderDto>>> Get([FromQuery] bool all = false, CancellationToken ct = default) =>
+        Ok(await mediator.Send(new GetSupplyOrdersQuery(all), ct));
+
+    [HttpPost]
+    public async Task<ActionResult<int>> Create([FromBody] CreateSupplyOrderCommand command, CancellationToken ct) =>
+        Ok(await mediator.Send(command, ct));
+
+    [HttpPut("{id:int}/status")]
+    public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateSupplyOrderStatusCommand command, CancellationToken ct)
+    {
+        await mediator.Send(command with { Id = id }, ct);
+        return NoContent();
+    }
+}
+
 [ApiController, Route("api/wishlist"), Authorize]
 public sealed class WishlistController(IMediator mediator) : ControllerBase
 {

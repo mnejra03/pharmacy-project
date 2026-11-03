@@ -38,6 +38,7 @@ public sealed class OrderEntityConfiguration : IEntityTypeConfiguration<OrderEnt
         b.Property(x => x.PaymentReference).HasMaxLength(200);
         b.Property(x => x.ShippingAddress).HasMaxLength(1000).IsRequired();
         b.Property(x => x.TotalPrice).HasPrecision(18, 2);
+        b.Property(x => x.IsSupplyOrder).HasDefaultValue(false);
         b.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
     }
 }
