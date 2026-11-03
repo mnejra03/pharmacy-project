@@ -29,6 +29,14 @@ export class AuthApiService {
     return this.http.post<LoginCommandDto>(`${this.baseUrl}/register`, payload);
   }
 
+  requestPasswordReset(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/password-reset/request`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/password-reset/confirm`, { token, newPassword });
+  }
+
   /**
    * POST /Auth/refresh
    * Refresh access token using refresh token.

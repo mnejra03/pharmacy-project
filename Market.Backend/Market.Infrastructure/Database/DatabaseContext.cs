@@ -6,6 +6,7 @@ public partial class DatabaseContext : DbContext, IAppDbContext
 {
     public DbSet<MarketUserEntity> Users => Set<MarketUserEntity>();
     public DbSet<RefreshTokenEntity> RefreshTokens => Set<RefreshTokenEntity>();
+    public DbSet<PasswordResetTokenEntity> PasswordResetTokens => Set<PasswordResetTokenEntity>();
     public DbSet<ChatMessageEntity> ChatMessages => Set<ChatMessageEntity>();
     public DbSet<NotificationEntity> Notifications => Set<NotificationEntity>();
     public DbSet<RecipeEntity> Recipes => Set<RecipeEntity>();

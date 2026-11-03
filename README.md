@@ -147,3 +147,25 @@ U stvarnom fajlu spoji ove vrijednosti u postojeće `ConnectionStrings` i `Strip
 Katalog proizvoda i brendova, kategorije, korpa sa spremanjem za kasnije, narudžbe i checkout, favoriti, ocjene i recenzije, recepti, obavijesti, chat, korisnički profili, admin upravljanje korisnicima/proizvodima/narudžbama/oglasima, direktno zaprimanje zaliha i zahtjevi farmaceuta za nabavku koje administrator odobrava ili odbija, slike i Stripe testno plaćanje.
 
 Mapa prenesenih funkcionalnosti, poznatih ograničenja i odluke o zadržavanju kataloga nalazi se u [MIGRATION_MAP.md](MIGRATION_MAP.md).
+
+## Reset lozinke i email
+
+Forma **Zaboravljena lozinka** ne otkriva da li korisnicki email postoji. Reset token je jednokratan i vrijedi 30 minuta; nakon uspjesnog resetovanja opozivaju se aktivne refresh sesije.
+
+Za slanje emaila podesi SMTP u `Market.Backend/Market.API/appsettings.Local.json` ili kroz sigurne varijable okruzenja:
+
+```json
+{
+  "Frontend": { "BaseUrl": "http://localhost:4200" },
+  "Smtp": {
+    "Host": "smtp.example.com",
+    "Port": 587,
+    "EnableSsl": true,
+    "From": "noreply@example.com",
+    "Username": "<SMTP username>",
+    "Password": "<SMTP password>"
+  }
+}
+```
+
+U `Development` okruzenju, ako SMTP nije podesen, API ispisuje reset link u terminalu. U produkciji SMTP mora biti konfigurisan za isporuku emaila. Ne commitaj SMTP lozinku ni druge tajne.

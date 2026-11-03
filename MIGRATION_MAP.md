@@ -32,8 +32,8 @@ The original migration note requested removal of `Product`, `ProductCategory`, a
 
 ## Features not migrated / scope limits
 
-- The old project does not contain an email/SMS delivery flow for activation or password-reset tokens. The new app has no real outbound token delivery; the forgot-password screen is currently only a placeholder.
-- Drag-and-drop was not implemented in the source application and has not been added to the migration.
+- Password reset is implemented with one-time, hashed, 30-minute tokens. SMTP delivery is configurable; in local Development without SMTP, the reset URL is written to the API log. Account activation/invite email or SMS flows are not present in the old project and remain outside the migration.
+- Drag-and-drop is implemented for product and advertisement image uploads in the admin UI. Other drag-and-drop interactions were not part of the old project and are not included.
 - Supplier records existed as seeded data in the source, but its supply-order endpoint did not select a supplier. The migrated supply request therefore tracks product, quantity, pharmacist, status, and stock update, not supplier purchasing/contact management.
 - Recipe scan files are stored in the database. Product, advertisement, and profile images use the configured file-storage provider; without Azure configuration, the backend falls back to local files.
 

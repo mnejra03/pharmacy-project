@@ -49,6 +49,7 @@ public static class DependencyInjection
         // HttpContext accessor + current user
         services.AddHttpContextAccessor();
         services.AddScoped<IAppCurrentUser, AppCurrentUser>();
+        services.AddScoped<IPasswordResetEmailSender, SmtpPasswordResetEmailSender>();
         services.AddSignalR();
         services.AddScoped<IChatNotifier, SignalRChatNotifier>();
         var blobConnectionString = configuration.GetConnectionString("AzureBlobStorage");
